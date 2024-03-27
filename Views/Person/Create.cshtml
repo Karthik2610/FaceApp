@@ -1,0 +1,1015 @@
+﻿@model FaceApp.Models.ViewModels.PersonsViewModel
+@{
+	ViewData["Title"] = "Persons";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	if (!ViewData.ModelState.IsValid)
+	{
+		<script>
+			$(document).ready(function () {
+				ShowModelpopup()
+			});
+		</script>
+	}
+}
+
+
+@using (Html.BeginForm("Create", "Person", FormMethod.Post, new { enctype = "multipart/form-data", id = "myPersonform", autocomplete = "off", role = "form" }))
+{
+	@Html.HiddenFor(m => m.PersonId)
+	@Html.HiddenFor(m => m.IsClearTrain)
+	@*<div class="container nospace">
+		<div class="flexWrapper">*@
+
+	@*<div class="contentSection">*@
+	<div class="pageTitle_wrap">
+		@if (Model.PersonId > 0)
+		{
+			<h6>Person Demographics</h6>
+		}
+		else
+		{
+			<h6>Person Demographics</h6>
+		}
+
+		@*<button type="submit" class="btn btn-success">Save</button>*@
+	</div>
+	<div class="formSection">
+		<div class="row">
+			<div class="col-md-4">
+				<div>
+					@Html.LabelFor(m => m.LastName, new { @class = "control-label" })
+					<span style="color:#e85347;"> * </span>
+					@Html.TextBoxFor(m => m.LastName, new { placeholder = "Last Name", @class = "inputfile" })
+					@*@Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger error" })*@
+				</div>
+
+			</div>
+			<div class="col-md-4">
+				<div>
+					@Html.LabelFor(m => m.FirstName, new { @class = "control-label" })
+					<span style="color:#e85347;"> * </span>
+					@Html.TextBoxFor(m => m.FirstName, new { placeholder = "First Name", @class = "inputfile" })
+					@*@Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger error" })*@
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div>
+					@Html.LabelFor(m => m.MiddleInitial, new { @class = "control-label" })
+					@Html.TextBoxFor(m => m.MiddleInitial, new { placeholder = "Middle Initial", @class = "inputfile" })
+				</div>
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<div>
+					@Html.LabelFor(m => m.Address1, new { @class = "control-label" })
+					@*<span style="color:#e85347;"> * </span>*@
+					@Html.TextAreaFor(m => m.Address1, new { placeholder = "Address 1", @class = "inputfile" })
+					@*@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger error" })*@
+				</div>
+                <div>
+                    @Html.LabelFor(m => m.Address2, new { @class = "control-label" })
+                    @*<span style="color:#e85347;"> * </span>*@
+                    @Html.TextBoxFor(m => m.Address2, new { placeholder = "Address 2", @class = "inputfile" })
+                    @*@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger error" })*@
+                </div>
+			</div>
+            <div class="col-md-4">
+                <div>
+                    @*<a href="@Url.Action("Train", "Person")"><img class="camera-icon" src="~/images/camera-icon.png" /></a>*@
+                    <a href="javascript:void(0)" onclick="return ShowTrainPopUp()"><img class="camera-icon" src="~/images/camera-icon.png" /></a>
+                    <div style="margin-left:25px"> Train </div>
+                </div>
+                @if (Model.PersonId > 0)
+                {
+                <div class="d-flex">
+                    <div class="trainedDetail">
+                        @Html.LabelFor(m => m.LastTrainedOn, new { @class = "control-label" })
+                        @if (Model.LastTrainedOn.HasValue && Model.LastTrainedOn.Value != null)
+                        {
+                            <div class="tD_value">
+                                @Model.LastTrainedOn.Value.ToString("dd/MM/yyyy")
+                            </div>
+                        }
+                    </div>
+                    <div class="trainedDetail">
+                        @Html.LabelFor(m => m.NoOfTrainings, new { @class = "control-label" })
+
+                        <div class="tD_value">
+                            @Model.NoOfTrainings
+                        </div>
+                    </div>
+                </div>
+                }
+                </div>
+
+                </div>                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div>
+                            @Html.LabelFor(m => m.City, new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.City, new { placeholder = "City", @class = "inputfile" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div>
+                            @Html.LabelFor(m => m.State, new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.State, new { placeholder = "State", @class = "inputfile" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div>
+                            @Html.LabelFor(m => m.Zip, new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.Zip, new { placeholder = "Zip Code", @class = "inputfile" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+
+                        <div class="form-group">
+                            <label class="control-label">Date of Birth</label>
+                            <div class='input-group date datepicker'>
+                                @Html.TextBoxFor(m => m.DOB, new { type = "text", @placeholder = "mm/dd/yyyy", @class = "form-control" })
+                                @*<input type='text' class="form-control" />*@
+                                <span class="input-group-addon">
+                                    <img src="~/images/calendar.png" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group mt30">
+                            <div class="checkbox checkbox-primary">
+                                @*@Html.TextBoxFor(m => m.IsActive, new { type = "checkbox", @placeholder = "mm/dd/yyyy", @class = "form-control" })*@
+                                @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input" })
+                                <label for="IsActive">
+                                    Active
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 pageTitle_wrap mt10">
+                        <h6>ID Assignments</h6>
+                    </div>
+
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.PersonId1, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.PersonId1, new { placeholder = "Person ID 1", @class = "inputfile" })
+                        @*@Html.ValidationMessageFor(m => m.UserEmpId, "", new { @class = "text-danger" })*@
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.PersonId2, new { @class = "control-label" })
+                        @*<span style="color:#e85347;"> * </span>*@
+                        @Html.TextBoxFor(m => m.PersonId2, new { placeholder = "Person ID 2", @class = "inputfile" })
+                        @*@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger error" })*@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.PersonId3, new { @class = "control-label" })
+                        @*<span style="color:#e85347;"> * </span>*@
+                        @Html.TextBoxFor(m => m.PersonId3, new { placeholder = "Person ID 3", @class = "inputfile" })
+                        @*@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger error" })*@
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12 pageTitle_wrap mt10">
+                        <h6>Add Program and Calendar</h6>
+                    </div>
+                    <div class="">
+                        <div class="col-md-4">
+                            <label class="control-label" for="LocationId">Location Name</label>
+                            @*<span style="color:#e85347;"> * </span>*@
+                            @Html.DropDownListFor(m => m.LocationId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.LocationsList, "Select Location", new { @class = "form-control mr15" })
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label" for="ProgramId">Program Name</label>
+                            @*<span style="color:#e85347;"> * </span>*@
+                            @Html.DropDownListFor(m => m.ProgramId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.ProgramsList, "Select Program", new { @class = "form-control mr15" })
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label" for="CalendarId">Calendar Name</label>
+                            @*<span style="color:#e85347;"> * </span>*@
+                            @Html.DropDownListFor(m => m.CalendarId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.CalendarsList, "Select Calendar", new { @class = "form-control mr15" })
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">From Date</label>
+                                @*<span style="color:#e85347;"> * </span>*@
+                                <div class='input-group date datepicker'>
+                                    @Html.TextBoxFor(m => m.FromDate, new { type = "text", @placeholder = "mm/dd/yyyy", @class = "form-control" })
+                                    <span class="input-group-addon">
+                                        <img src="~/images/calendar.png" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">To Date</label>
+                                @*<span style="color:#e85347;"> * </span>*@
+                                <div class='input-group date datepicker'>
+                                    @Html.TextBoxFor(m => m.ToDate, new { type = "text", @placeholder = "mm/dd/yyyy", @class = "form-control" })
+                                    <span class="input-group-addon">
+                                        <img src="~/images/calendar.png" />
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-2 col-sm-12">
+                            <button class="btn btn-md btn-success mt27" type="button" onclick="AddPersonDetails()">Add</button>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-12 mt10">
+                        <div class="grid_section">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="tblPersonDetailsList">
+                                    <thead>
+                                        <tr>
+                                            <th> Location Name </th>
+                                            <th> Program Name </th>
+                                            <th> Calendar Name </th>
+                                            <th> From Date </th>
+                                            <th> To Date </th>
+                                            <th width="5%"> Action </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model != null && Model.PersonDetailsList != null)
+                                        {
+                                            for (int i = 0; i < Model.PersonDetailsList.Count; i++)
+                                            {
+                                                <tr>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].PersonsDetailsId
+                                                    </td>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].PersonId
+                                                    </td>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].LocationId
+                                                    </td>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].LocationName
+                                                    </td>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].ProgramId
+                                                    </td>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].ProgramName
+                                                    </td>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].CalendarId
+                                                    </td>
+                                                    <td style="display:none">
+                                                        @Model.PersonDetailsList[i].CalendarName
+                                                    </td>
+                                                    <td>
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].PersonId)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].LocationId)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].LocationName)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].ProgramId)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].ProgramName)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].CalendarId)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].CalendarName)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].StartDate)
+                                                        @Html.HiddenFor(m => Model.PersonDetailsList[i].EndDate)
+                                                        @Model.PersonDetailsList[i].LocationName
+                                                    </td>
+                                                    <td>
+                                                        @Model.PersonDetailsList[i].ProgramName
+                                                    </td>
+                                                    <td>
+                                                        @Model.PersonDetailsList[i].CalendarName
+                                                    </td>
+                                                    <td>
+                                                        @Model.PersonDetailsList[i].StartDate
+                                                    </td>
+                                                    <td>
+                                                        @Model.PersonDetailsList[i].EndDate
+                                                    </td>
+                                                    <td class="text-center"> <a href="javascript:;" onclick="PersonDetailsListDelete(@Model.PersonDetailsList[i].PersonsDetailsId,this)" class="text-primary action-icon" aria-label="Delete"><img src="~/images/status-out.png"></a></td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 text-center">
+                        <hr>
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <div class="btn-wrapper justify_sb">
+                        <a href="@Url.Action("Index", "Person")" class="btn btn-lg btn-secondary">Cancel</a>
+                        <button class="btn btn-lg btn-success" type="submit">Save</button>
+                    </div>
+                </div>
+            </div>
+
+	@*</div>*@
+
+
+	<!-- Modal -->
+	<div id="newService" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">There are some missing fields that are required to save a form</h4>
+				</div>
+				<div class="modal-body">
+					<div class="pageTitle_wrap">
+						<h6>Please review the below fields before saving</h6>
+					</div>
+					<div class="formSection">
+						<div class="row">
+							@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+
+	<!-- Train Modal -->
+	<div id="divTrain" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" onclick="stopStreaming()">&times;</button>
+					@*<h4 class="modal-title">There are some missing fields that are required to save a form</h4>*@
+				</div>
+				<div class="modal-body">
+					@*<div class="pageTitle_wrap">
+							<h6>Please review the below fields before saving</h6>
+						</div>*@
+					<div class="formSection">
+
+						<form asp-action="Train" id="Identifyform" enctype="multipart/form-data">
+							<div class="pageTitle_wrap">
+								<h6>Train a Person</h6>
+								<div class="select">
+									<select name="" id="videoSource" class="custom-select">
+										<option value="">Select camera</option>
+									</select>
+								</div>
+							</div>
+							<div class="attendance_wrap">
+								<div class="capture-wrap">
+
+									<img src="~/images/camera-capture.png" class="img-responsive mx-auto largeDev">
+									<img src="~/images/captureMobile.png" class="img-responsive mx-auto smallDev">
+									<video id="stream" playsinline autoplay></video>
+									<canvas id="capture" width="480" height="320"></canvas>
+									<input type="image" disabled="disabled" id="imgcap" style="width:320px;height:240px;display:none" />
+									<input type="text" id="txtimgcap" style="display:none" asp-for="CapturedFile" />                                    
+								</div>
+								<div class="text-center p20">
+									<button id="btn-capture" type="submit" class="btn btn-success" style="margin-bottom:8px;"> Take Snapshot and upload</button>
+								</div>
+								<div class="text-center p20">
+									<input type="file" accept="image/png,image/jpeg,image/jpg" class="form-control mt10 mb10" id="imgInp" asp-for="UploadedFile" />
+									<span class="text-danger change_mode" id="spanUploadFilealert"></span>
+									<button id="btn-upload" type="submit" class="btn btn-success" style="margin-bottom:8px;" onclick="return FileUploadBtnClick()"> Upload the selected photo</button>
+								</div>
+								@if (Model.PersonId > 0)
+								{
+									<button id="btn-clear" type="submit" class="btn btn-success" style="margin-bottom:8px;" onclick="OnclickClearTrain()"> Clear to all the train and recapture or re upload </button>
+								}
+							</div>
+						</form>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="stopStreaming()">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div id="PersonDetailsError" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Please review the information below</h4>
+				</div>
+				<div class="modal-body">
+					@*<div class="pageTitle_wrap">
+						<h6>Please review the information below</h6>
+					</div>*@
+					<div class="formSection">
+						<div class="row">
+							<div>
+								<label id="ErrorRemoveItem" class="error ml25" style="display:none"> Unable to remove this item, already attendace taken this program to </label>
+							</div>
+							<div>
+								<label id="ErrorLocation" class="error ml25" style="display:none"> Please Select Location </label>
+							</div>
+							<div>
+								<label id="ErrorProgram" class="error ml25" style="display:none"> Please Select Program </label>
+							</div>
+							<div>
+								<label id="ErrorCalendar" class="error ml25" style="display:none"> Please Select Calendar </label>
+							</div>
+							<div>
+								<label id="ErrorFromDate" class="error ml25" style="display:none"> Enter From Date </label>
+							</div>
+							<div>
+								<label id="ErrorToDate" class="error ml25" style="display:none"> Enter To Date </label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+}
+@*</div>
+	</div>*@
+<script src="~/js/main.js"></script>
+<script>
+
+
+
+	$("#IsClearTrain").val("false");
+	 // The buttons to start & stop stream and to capture the image
+    var btnCapture = document.getElementById("btn-capture");
+
+    // The stream & capture
+    var stream = document.getElementById("stream");
+    var capture = document.getElementById("capture");
+
+    // The video stream
+    var cameraStream = null;
+    // Attach listeners
+    btnCapture.addEventListener("click", captureSnapshot);
+    //$(window).on("load", startStreaming());
+    $(window).on('beforeunload', function () {
+        stopStreaming();
+    });
+
+    //imgInp.onchange = evt => {
+    //    const [file] = imgInp.files
+    //    if (file) {
+    //        imgcap.src = URL.createObjectURL(file);
+    //        txtimgcap.value = imgcap.src;
+    //        imgcap.style.display = 'block';
+    //        alert(imgcap.src);
+    //    }
+    //}
+
+    @*$(document).ready(function () {
+        loadType = '@ViewBag.imgcap';
+		debugger;
+        if (loadType == '') {
+            $(window).on("load", startStreaming());
+        }
+        else {
+            $(window).on("load", stopStreaming());
+        }
+    });*@
+
+	function OnclickClearTrain() {
+		$("#IsClearTrain").val("true");  captureSnapshot();
+	}
+
+	function ShowTrainPopUp() {
+		startStreaming();
+		$("#divTrain").modal()
+	}
+
+	function CloseTrainPopUp() {
+		stopStreaming();
+	}
+
+	function ShowModelpopup() {
+		$("#newService").modal()
+	}
+
+	function ShowPersonDetailsErrorpopup() {
+		$("#PersonDetailsError").modal()
+	}
+
+	function FileUploadBtnClick() {
+		if ($("#imgInp").val() == null || $("#imgInp").val() == "") {
+			$("#spanUploadFilealert").text("Please choose photo to upload.");
+			setTimeout(function () { $("#spanUploadFilealert").text(""); }, 5000);
+			return false;
+		}
+		else if (!validateFileType()) {
+			$("#spanUploadFilealert").text("Accepted file format are JPG, JPEG, PNG.");
+			setTimeout(function () { $("#spanUploadFilealert").text(""); }, 5000);
+			return false;
+		}
+	}
+
+	function validateFileType() {
+		var inputElement = document.getElementById('imgInp');
+		var files = inputElement.files;
+		if (files.length == 0) {
+			return true;
+		} else {
+			var filename = files[0].name;
+
+			/* getting file extenstion eg- .jpg,.png, etc */
+			var extension = filename.substr(filename.lastIndexOf("."));
+
+			/* define allowed file types */
+			var allowedExtensionsRegx = /(\.jpg|\.jpeg|\.png)$/i;
+
+			/* testing extension with regular expression */
+			var isAllowed = allowedExtensionsRegx.test(extension);
+
+			if (isAllowed) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	function OnchangePassword() {
+		$("#IsPasswordChanged").val("true");
+	}
+
+    //function startStreaming() {
+
+    //    var mediaSupport = 'mediaDevices' in navigator;
+
+    //    if (mediaSupport && null == cameraStream) {
+
+    //        navigator.mediaDevices.getUserMedia({ video: true })
+    //            .then(function (mediaStream) {
+
+    //                cameraStream = mediaStream;
+
+    //                stream.srcObject = mediaStream;
+
+    //                stream.play();
+    //                btnStart.style.display = "none";
+    //                btnStop.style.display = "inline-block";
+    //            })
+    //            .catch(function (err) {
+    //                btnStart.style.display = "inline-block";
+    //                btnStop.style.display = "none";
+    //                console.log("Unable to access camera: " + err);
+    //            });
+    //    }
+    //    else {
+    //        btnStart.style.display = "inline-block";
+    //        btnStop.style.display = "none";
+    //        alert('Your browser does not support media devices.');
+
+    //        return;
+    //    }
+    //}
+
+    // Stop Streaming
+	function stopStreaming() {
+
+		//const video = stream;
+		const cameraStream = videoElement.srcObject;
+
+        if (null != cameraStream) {
+            var track = cameraStream.getTracks()[0];
+            track.stop();
+			//const tracks = cameraStream.getTracks();
+			//tracks.forEach(track => track.stop())
+			stream.load();
+            //btnStart.style.display = "inline-block";
+            //btnStop.style.display = "none";
+            cameraStream = null;
+        }
+    }
+
+    function captureSnapshot() {
+
+        if (null != videoElement.srcObject) {
+            divresult=document.getElementById('divResult')
+            if (divresult!= undefined) {
+                divresult.innerHTML = "";
+                divresult.style.display = 'none';
+            }
+            var ctx = capture.getContext('2d');
+            var img = document.getElementById("imgcap");
+            img.style.display = 'none';
+            ctx.drawImage(videoElement, 0, 0, capture.width, capture.height);
+
+            img.src = capture.toDataURL("image/png");
+            img.width = 320;
+            var txt = document.getElementById("txtimgcap")
+            txt.value = img.src;
+        }
+	}
+
+
+	$("#LocationId").change(function () {
+		var LocationId = $("#LocationId").val();
+		if (LocationId ==""){
+			$("#ProgramId").empty();
+			$("#CalendarId").empty();
+						var optionhtmlProgram = '<option value="">' + "Select Program" + '</option>';
+			var optionhtmlCalendar = '<option value="">' + "Select Calendar" + '</option>';
+						$("#ProgramId").append(optionhtmlProgram);
+			$("#CalendarId").append(optionhtmlCalendar);
+						$("#ProgramId").val("");
+						$("#CalendarId").val("");
+						return false;
+		}
+
+            $.ajax({
+                type: "get",
+                url: '@Url.Action("GetLocationSelectedData", "Person")',
+                dataType: "json",
+				data: { "LocationId": LocationId},
+				error: function (jqXHR) {
+					SignoutURL(jqXHR);
+				},
+            }).done(function (response) {
+				if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+				else {
+					if (response.result.programs !=null){
+                        var id = $("#ProgramId").val();
+                        var existsid = false;
+						$("#ProgramId").empty();
+						var optionhtml1 = '<option value="">' + "Select Program" + '</option>';
+						$("#ProgramId").append(optionhtml1);
+						$.each(response.result.programs, function (i) {
+							var optionhtml = '<option value="' +
+								response.result.programs[i].Value + '">' + response.result.programs[i].Text + '</option>';
+							if (response.result.programs[i].Selected) {
+                                    existsid = true;
+									id = response.result.programs[i].Value;
+                                }
+							if (response.result.programs[i].Value == id) {
+                                    existsid = true;
+								id = response.result.programs[i].Value;
+                                }
+							$("#ProgramId").append(optionhtml);
+
+
+                            });
+                        if (existsid) {
+							$("#ProgramId").val(id);
+                        } else {
+							$("#ProgramId").val("");
+                        }
+						$("#ProgramId").trigger("change");
+					}
+                }
+            });
+	});
+
+	$("#ProgramId").change(function () {
+		var ProgramId = $("#ProgramId").val();
+		if (ProgramId ==""){
+			$("#CalendarId").empty();
+			var optionhtmlCalendar = '<option value="">' + "Select Calendar" + '</option>';
+			$("#CalendarId").append(optionhtmlCalendar);
+			$("#CalendarId").val("");
+			return false;
+		}
+
+            $.ajax({
+                type: "get",
+                url: '@Url.Action("GetSelectedProgramData", "Person")',
+                dataType: "json",
+				data: { "ProgramId": ProgramId},
+				error: function (jqXHR) {
+					SignoutURL(jqXHR);
+				},
+            }).done(function (response) {
+				if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+                else {
+					if (response.result.calendars != null) {
+						var id = $("#CalendarId").val();
+                        var existsid = false;
+						$("#CalendarId").empty();
+							var optionhtml1 = '<option value="">' + "Select Calendar" + '</option>';
+						$("#CalendarId").append(optionhtml1);
+						$.each(response.result.calendars, function (i) {
+							var optionhtml = '<option value="' +
+								response.result.calendars[i].Value + '">' + response.result.calendars[i].Text + '</option>';
+							if (response.result.calendars[i].Selected) {
+                                    existsid = true;
+								id = response.result.calendars[i].Value;
+                                }
+							if (response.result.calendars[i].Value == id) {
+                                    existsid = true;
+								id = response.result.calendars[i].Value;
+                                }
+							$("#CalendarId").append(optionhtml);
+
+
+                            });
+                        if (existsid) {
+							$("#CalendarId").val(id);
+                        } else {
+							$("#CalendarId").val("");
+                        }
+						$("#CalendarId").trigger("change");
+					}
+                }
+            });
+    });
+
+	function AddPersonDetails() {
+        ClearErrors();
+		var LocationId = $("#LocationId").val();
+		var ProgramId = $("#ProgramId").val();
+		var CalendarId = $("#CalendarId").val();
+		var FromDate = $("#FromDate").val();
+		var ToDate = $("#ToDate").val();
+		var LocationIdSelect = document.getElementById("LocationId");
+		var ProgramIdSelect = document.getElementById("ProgramId");
+		var CalendarIdSelect = document.getElementById("CalendarId");
+		var LocationName = LocationIdSelect.options[LocationIdSelect.selectedIndex].text;
+		var ProgramName = ProgramIdSelect.options[ProgramIdSelect.selectedIndex].text;
+		var CalendarName = CalendarIdSelect.options[CalendarIdSelect.selectedIndex].text;
+		var Error = false;
+
+		if (LocationId == null || LocationId == "") { document.getElementById("ErrorLocation").removeAttribute("style"); $("#ErrorLocation").text("Please Select Location"); Error = true; }
+		if (ProgramId == null || ProgramId == "") { document.getElementById("ErrorProgram").removeAttribute("style"); $("#ErrorProgram").text("Please Select Program"); Error = true; }
+		if (CalendarId == null || CalendarId == "") { document.getElementById("ErrorCalendar").removeAttribute("style"); $("#ErrorCalendar").text("Please Select Calendar"); Error = true; }
+		if (FromDate == null || FromDate == "") { document.getElementById("ErrorFromDate").removeAttribute("style"); $("#ErrorFromDate").text("Enter From Date"); Error = true; }
+		if (ToDate == null || ToDate == "") { document.getElementById("ErrorToDate").removeAttribute("style"); $("#ErrorToDate").text("Enter To Date"); Error = true; }
+		if ((ToDate != null && ToDate.trim() != "") && (FromDate != null && FromDate.trim() != "")) {
+			var d1 = new Date(FromDate);
+			var d2 = new Date(ToDate);
+			if (d1 > d2) {
+				document.getElementById("ErrorToDate").removeAttribute("style");
+				$("#ErrorToDate").text("To Date should be greater than From Date"); Error = true;
+			}
+		}
+        var table = $("#tblPersonDetailsList tr:gt(0)");
+        var CalendarDuplicateCheckList = [];
+
+        if (table.length > 0 && !Error) {
+            $(table).each(function () {
+                var this_row = $(this);
+                var RowLocationId = $.trim(this_row.find('td:eq(2)').html());
+                var RowProgramId = $.trim(this_row.find('td:eq(4)').html());
+                var RowCalendarId = $.trim(this_row.find('td:eq(6)').html());
+                var StartDate = $.trim(this_row.find('td:eq(11)').html());
+                var EndDate = $.trim(this_row.find('td:eq(12)').html());
+                //if (LocationId == RowLocationId
+                    //&& ProgramId == RowProgramId && CalendarId == RowCalendarId
+                //) {
+                    if (dateRangeOverlaps(StartDate, EndDate, FromDate, ToDate)) {
+                        var CalendarDuplicateCheck = {
+                            CalendarId: CalendarId,
+                            StartDate: FromDate,
+                            EndDate: ToDate,
+                            RowCalendarId: RowCalendarId,
+                            RowStartDate: StartDate,
+                            RowEndDate: EndDate
+                        }
+                        CalendarDuplicateCheckList.push(CalendarDuplicateCheck);
+                        //document.getElementById("ErrorLocation").removeAttribute("style");
+                        //$("#ErrorLocation").text("Record already added in the list for selected date range");
+                        //Error = true;
+
+                    }
+                //}
+            });
+
+
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("GetCalendarDuplicateStatus", "Person")',
+                dataType: "json",
+                data: { "usertable": CalendarDuplicateCheckList },
+                error: function (jqXHR) {
+                    SignoutURL(jqXHR);
+                },
+            }).done(function (response) {
+                if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+                else {
+                    debugger;
+                    if (response.result != null) {
+                        var IsDuplicate = response.result.IsDuplicate;
+                        if (IsDuplicate) {
+                            document.getElementById("ErrorLocation").removeAttribute("style");
+                            $("#ErrorLocation").text("Record already added in the list for selected date range");
+                            Error = true;
+                        }
+
+                        if (Error) {
+                            ShowPersonDetailsErrorpopup();
+                            return false
+                        } else {                            
+                                var rowcount = $('#tblPersonDetailsList tbody tr').length;
+
+                                if ($('#tblPersonDetailsList tbody:first tr')[0] != null && $('#tblPersonDetailsList tbody:first tr')[0].innerText == 'No Data Found') {
+                                    $("#tblPersonDetailsList").find("tr:gt(0)").remove();
+                                    rowcount = 0;
+                                }
+
+                                AddPersonDetailsListTableRow(rowcount, 0, 0, LocationId, ProgramId, CalendarId, LocationName, ProgramName, CalendarName, FromDate, ToDate)
+
+                                $("#CalendarId").val("");
+                                $("#LocationId").val("");
+                                $("#ProgramId").val("");
+                                $("#CalendarId").val("");
+                                $("#FromDate").val("");
+                                $("#ToDate").val("");
+                        }
+                    }
+                }
+            });
+
+        } else {
+
+		    if (Error) {
+			    ShowPersonDetailsErrorpopup();
+			    return false
+		    };
+
+		    var rowcount = $('#tblPersonDetailsList tbody tr').length;
+
+		    if ($('#tblPersonDetailsList tbody:first tr')[0] != null && $('#tblPersonDetailsList tbody:first tr')[0].innerText == 'No Data Found') {
+			    $("#tblPersonDetailsList").find("tr:gt(0)").remove();
+			    rowcount = 0;
+		    }
+
+		    AddPersonDetailsListTableRow(rowcount, 0, 0,LocationId,ProgramId,CalendarId,LocationName,ProgramName,CalendarName,FromDate,ToDate)
+
+		    $("#CalendarId").val("");
+		    $("#LocationId").val("");
+		    $("#ProgramId").val("");
+		    $("#CalendarId").val("");
+		    $("#FromDate").val("");
+            $("#ToDate").val("");
+        }
+	}
+
+
+	function dateRangeOverlaps(a_start, a_end, b_start, b_end) {
+        const dateStart1 = new Date(a_start);
+        const dateEnd1 = new Date(a_end);
+        const dateStart2 = new Date(b_start);
+		const dateEnd2 = new Date(b_end);
+
+        if (dateStart1 < dateStart2 && dateStart2 < dateEnd1) return true; // b starts in a
+        if (dateStart1 < dateEnd2 && dateEnd2 < dateEnd1) return true; // b ends in a
+        if (dateStart2 < dateStart1 && dateEnd1 < dateEnd2) return true; // a in b
+        if (dateStart2.toDateString() == dateStart1.toDateString() || dateEnd1.toDateString() == dateEnd2.toDateString()) return true; // a in b
+        if (dateEnd1 > dateStart2 || dateEnd1.toDateString() == dateStart2.toDateString()) return true; // a in b
+		return false;
+	}
+
+	function AddPersonDetailsListTableRow(count, PersonsDetailsId, PersonId, LocationId, ProgramId, CalendarId, LocationName, ProgramName, CalendarName, StartDate, EndDate) {
+		$('#tblPersonDetailsList').append('<tr>'
+			+ '<td style="display:none">' + PersonsDetailsId + '</td>'
+			+ '<td style="display:none">' + PersonId + '</td>'
+			+ '<td style="display:none">' + LocationId + '</td>'
+			+ '<td style="display:none">' + LocationName + '</td>'
+			+ '<td style="display:none">' + ProgramId + '</td>'
+			+ '<td style="display:none">' + ProgramName + '</td>'
+			+ '<td style="display:none">' + CalendarId + '</td>'
+			+ '<td style="display:none">' + CalendarName + '</td>'
+			+ '<td><input type="hidden" id="ProgramCalendarList_' + count + '__PersonsDetailsId" name="PersonDetailsList[' + count + '].PersonsDetailsId" value="' + PersonsDetailsId + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__PersonId" name="PersonDetailsList[' + count + '].PersonId" value="' + PersonId + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__LocationId" name="PersonDetailsList[' + count + '].LocationId" value="' + LocationId + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__LocationName" name="PersonDetailsList[' + count + '].LocationName" value="' + LocationName + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__ProgramId" name="PersonDetailsList[' + count + '].ProgramId" value="' + ProgramId + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__ProgramName" name="PersonDetailsList[' + count + '].ProgramName" value="' + ProgramName + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__CalendarId" name="PersonDetailsList[' + count + '].CalendarId" value="' + CalendarId + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__CalendarName" name="PersonDetailsList[' + count + '].CalendarName" value="' + CalendarName + '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__StartDate" name="PersonDetailsList[' + count + '].StartDate" value="' + StartDate+ '"/>'
+			+ '<input type="hidden" id="PersonDetailsList_' + count + '__EndDate" name="PersonDetailsList[' + count + '].EndDate" value="' + EndDate+ '"/>'
+			+ '' + LocationName + '</td>'
+			+ '<td>' + ProgramName + '</td>'
+			+ '<td>' + CalendarName + '</td>'
+			+ '<td>' + StartDate + '</td>'
+			+ '<td>' + EndDate + '</td>'
+            + '<td class="text-center"><a href="javascript:;" onclick="PersonDetailsListDelete(' + PersonsDetailsId + ',this)" class="text-primary action-icon" aria-label="Delete"><img src="/images/status-out.png" ></a></td></tr>')
+	}
+
+
+	function PersonDetailsListDelete(id, obj) {
+        ClearErrors();
+		 var IsAlredyMapping = false;
+        if (id > 0) {
+
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("GetPersonAttendaceStatus", "Person")',
+                dataType: "json",
+                data: { "PersonsDetailsId": id },
+                error: function (jqXHR) {
+                    SignoutURL(jqXHR);
+                },
+            }).done(function (response) {
+                if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+                else {
+                    if (response.IsProgramStarted != null) {
+                        IsAlredyMapping = response.IsProgramStarted;
+                        if (!IsAlredyMapping) {
+                            DeleteItem(id, obj)
+						} else {
+							document.getElementById("ErrorRemoveItem").removeAttribute("style");
+							$("#ErrorRemoveItem").text("Unable to remove this record, attendace already taken to this program");
+							ShowPersonDetailsErrorpopup();
+                        }
+                    }
+                }
+            });
+
+        }
+        else {
+            DeleteItem(id, obj)
+        }
+    }
+
+    function DeleteItem(id, obj) {
+        $(obj).closest('tr').remove();
+        var rowcount = $('#tblPersonDetailsList tr').length - 1;
+        if (rowcount > 0) {
+            var count = 0;
+            var table = $("#tblPersonDetailsList tr:gt(0)");
+            $("#tblPersonDetailsList").find("tr:gt(0)").remove();
+            $(table).each(function () {
+                var this_row = $(this);
+                var PersonsDetailsId = $.trim(this_row.find('td:eq(0)').html());
+                var PersonId = $.trim(this_row.find('td:eq(1)').html());
+                var LocationId = $.trim(this_row.find('td:eq(2)').html());
+                var LocationName = $.trim(this_row.find('td:eq(3)').html());
+                var ProgramId = $.trim(this_row.find('td:eq(4)').html());
+                var ProgramName = $.trim(this_row.find('td:eq(5)').html());
+                var CalendarId = $.trim(this_row.find('td:eq(6)').html());
+                var CalendarName = $.trim(this_row.find('td:eq(7)').html());
+                var FromDate = $.trim(this_row.find('td:eq(11)').html());
+                var ToDate = $.trim(this_row.find('td:eq(12)').html());
+                AddPersonDetailsListTableRow(count, PersonsDetailsId, PersonId, LocationId, ProgramId, CalendarId, LocationName, ProgramName, CalendarName, FromDate, ToDate)
+                count++;
+            });
+        }
+    }
+	function ClearErrors() {
+
+		document.getElementById("ErrorLocation").style.display = "none";
+		document.getElementById("ErrorProgram").style.display = "none";
+		document.getElementById("ErrorCalendar").style.display = "none";
+		document.getElementById("ErrorFromDate").style.display = "none";
+		document.getElementById("ErrorRemoveItem").style.display = "none";
+		document.getElementById("ErrorToDate").style.display = "none";
+
+		$("#ErrorToDate").text("");
+		$("#ErrorLocation").text("");
+        $("#ErrorProgram").text("");
+        $("#ErrorCalendar").text("");
+        $("#ErrorFromDate").text("");
+        $("#ErrorRemoveItem").text("");
+    }
+
+</script>

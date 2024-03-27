@@ -1,0 +1,435 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <StartupObject>FaceApp.Program</StartupObject>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <ApplicationInsightsResourceId>/subscriptions/8c575560-24bf-473f-8cef-725d8919a2dc/resourcegroups/rg-mt-prod/providers/microsoft.insights/components/webapp-mt-prod</ApplicationInsightsResourceId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="log4net.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\netcoreapp2.0\FaceApp.deps.json" />
+    <Content Include="bin\Debug\netcoreapp2.0\FaceApp.runtimeconfig.dev.json" />
+    <Content Include="bin\Debug\netcoreapp2.0\FaceApp.runtimeconfig.json" />
+    <Content Include="bin\Release\netcoreapp2.0\FaceApp.deps.json" />
+    <Content Include="bin\Release\netcoreapp2.0\FaceApp.runtimeconfig.dev.json" />
+    <Content Include="bin\Release\netcoreapp2.0\FaceApp.runtimeconfig.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\appsettings.Development.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\appsettings.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\bundleconfig.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\FaceApp.deps.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\FaceApp.runtimeconfig.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\css\site.css" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\css\site.min.css" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\favicon.ico" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\.bower.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap-theme.css" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap-theme.min.css" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap.css" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation-unobtrusive\.bower.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation\.bower.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery\.bower.json" />
+    <Content Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery\LICENSE.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Communication.Email" Version="1.0.0" />
+    <PackageReference Include="ClosedXML" Version="0.102.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.Face" Version="2.7.0-preview.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
+    <PackageReference Include="RazorEngine.NetCore" Version="2.2.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\CameraPhotos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\.svn\all-wcprops" />
+    <None Include="bin\.svn\entries" />
+    <None Include="bin\Debug\netcoreapp2.0\FaceApp.dll" />
+    <None Include="bin\Debug\netcoreapp2.0\FaceApp.pdb" />
+    <None Include="bin\Release\netcoreapp2.0.7z" />
+    <None Include="bin\Release\netcoreapp2.0\FaceApp.dll" />
+    <None Include="bin\Release\netcoreapp2.0\FaceApp.pdb" />
+    <None Include="bin\Release\netcoreapp2.0\publish\cs\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\cs\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\cs\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\cs\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\de\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\dotnet-aspnet-codegenerator-design.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\EFSQLScripts\FaceApp.Data.FaceAppDBContext.sql" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\es\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\FaceApp.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\FaceApp.pdb" />
+    <None Include="bin\Release\netcoreapp2.0\publish\FaceApp.PrecompiledViews.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\FaceApp.PrecompiledViews.pdb" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\fr\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\it\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ja\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ko\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AI.DependencyCollector.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.ApplicationInsights.AspNetCore.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.ApplicationInsights.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Antiforgery.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.ApplicationInsights.HostingStartup.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.Cookies.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.Core.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.Facebook.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.Google.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.JwtBearer.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.MicrosoftAccount.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.OAuth.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authentication.Twitter.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authorization.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Authorization.Policy.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.AzureAppServices.HostingStartup.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.AzureAppServicesIntegration.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.CookiePolicy.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Cors.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Cryptography.Internal.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.DataProtection.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.DataProtection.AzureStorage.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.DataProtection.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.DataProtection.Extensions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Diagnostics.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Diagnostics.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Hosting.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Hosting.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Html.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Http.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Http.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Http.Extensions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Http.Features.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.HttpOverrides.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Identity.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.JsonPatch.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Localization.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Localization.Routing.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.MiddlewareAnalysis.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.ApiExplorer.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Core.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Cors.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.DataAnnotations.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Formatters.Json.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Formatters.Xml.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Localization.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Razor.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.RazorPages.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.TagHelpers.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Mvc.ViewFeatures.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.NodeServices.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Owin.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Razor.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Razor.Language.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Razor.Runtime.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.ResponseCaching.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.ResponseCompression.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Rewrite.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Routing.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Routing.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Server.HttpSys.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Server.IISIntegration.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Server.Kestrel.Core.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Server.Kestrel.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Server.Kestrel.Https.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.Session.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.SpaServices.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.StaticFiles.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.WebSockets.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.AspNetCore.WebUtilities.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Azure.CognitiveServices.Vision.Face.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Azure.KeyVault.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Azure.KeyVault.WebKey.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.CodeAnalysis.CSharp.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.CodeAnalysis.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.CodeAnalysis.Razor.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.CodeAnalysis.VisualBasic.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.CodeAnalysis.Workspaces.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Data.Edm.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Data.OData.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Data.Sqlite.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.DotNet.PlatformAbstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.EntityFrameworkCore.Design.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.EntityFrameworkCore.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.EntityFrameworkCore.InMemory.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.EntityFrameworkCore.Relational.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.EntityFrameworkCore.Sqlite.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.EntityFrameworkCore.SqlServer.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Caching.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Caching.Memory.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Caching.Redis.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Caching.SqlServer.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.AzureKeyVault.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.Binder.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.CommandLine.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.FileExtensions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.Ini.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.Json.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.UserSecrets.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Configuration.Xml.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.DependencyInjection.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.DependencyModel.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.DiagnosticAdapter.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.FileProviders.Composite.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.FileProviders.Embedded.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.FileProviders.Physical.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.FileSystemGlobbing.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Hosting.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Identity.Core.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Identity.Stores.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Localization.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Localization.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.Abstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.AzureAppServices.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.Configuration.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.Console.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.Debug.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.EventSource.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Logging.TraceSource.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.ObjectPool.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Options.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.PlatformAbstractions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.Primitives.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Extensions.WebEncoders.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.IdentityModel.Clients.ActiveDirectory.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.IdentityModel.Logging.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.IdentityModel.Protocols.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.IdentityModel.Tokens.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Net.Http.Headers.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Rest.ClientRuntime.Azure.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.Rest.ClientRuntime.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.BrowserLink.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.CodeGeneration.Contracts.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.CodeGeneration.Core.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.CodeGeneration.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Microsoft.WindowsAzure.Storage.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Newtonsoft.Json.Bson.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Newtonsoft.Json.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\NuGet.Frameworks.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pl\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pl\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pl\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pl\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pt-BR\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pt-BR\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pt-BR\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\RazorEngine.NetCore.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\Remotion.Linq.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\linux-arm64\native\libuv.so" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\linux-armel\native\libuv.so" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\linux-arm\native\libuv.so" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\linux-x64\native\libe_sqlite3.so" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\linux-x64\native\libuv.so" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\linux-x86\native\libe_sqlite3.so" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\osx-x64\native\libe_sqlite3.dylib" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\osx\native\libuv.dylib" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\unix\lib\netcoreapp2.0\System.Security.Principal.Windows.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\unix\lib\netstandard2.0\System.Data.SqlClient.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win-arm64\native\sni.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win-arm\native\libuv.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win-x64\native\libuv.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win-x64\native\sni.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win-x86\native\libuv.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win-x86\native\sni.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win7-x64\native\e_sqlite3.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win7-x86\native\e_sqlite3.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win\lib\netcoreapp2.0\System.Security.AccessControl.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win\lib\netcoreapp2.0\System.Security.Principal.Windows.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win\lib\netcoreapp2.0\System.Text.Encoding.CodePages.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\runtimes\win\lib\netstandard2.0\System.Data.SqlClient.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\ru\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\SQLitePCLRaw.batteries_green.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\SQLitePCLRaw.batteries_v2.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\SQLitePCLRaw.core.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\SQLitePCLRaw.provider.e_sqlite3.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\StackExchange.Redis.StrongName.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Collections.Immutable.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Composition.AttributedModel.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Composition.Convention.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Composition.Hosting.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Composition.Runtime.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Composition.TypedParts.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Data.SqlClient.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.IdentityModel.Tokens.Jwt.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Interactive.Async.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Reflection.Metadata.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Runtime.CompilerServices.Unsafe.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Security.AccessControl.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Security.Cryptography.Xml.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Security.Permissions.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Security.Principal.Windows.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Spatial.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Text.Encoding.CodePages.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\System.Text.Encodings.Web.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\tr\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\tr\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\tr\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\tr\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\web.config" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\images\banner1.svg" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\images\banner2.svg" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\images\banner3.svg" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\images\banner4.svg" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\js\site.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\js\site.min.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap-theme.min.css.map" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\dist\js\npm.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery-validation\LICENSE.md" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery\dist\jquery.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery\dist\jquery.min.js" />
+    <None Include="bin\Release\netcoreapp2.0\publish\wwwroot\lib\jquery\dist\jquery.min.map" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hans\System.Spatial.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.CodeAnalysis.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.CodeAnalysis.VisualBasic.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.CodeAnalysis.VisualBasic.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.Data.Edm.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\Microsoft.Data.OData.resources.dll" />
+    <None Include="bin\Release\netcoreapp2.0\publish\zh-Hant\System.Spatial.resources.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+</Project>

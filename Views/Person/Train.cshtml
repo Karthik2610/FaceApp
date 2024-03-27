@@ -1,0 +1,154 @@
+﻿@model FaceApp.Models.Face
+@{
+    ViewData["Title"] = "Identify";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+    <form asp-action="Train" id="Identifyform" enctype="multipart/form-data">
+        <div class="pageTitle_wrap">
+            <h6>Train a Person</h6>
+            <div class="select">
+                <select name="" id="videoSource" class="custom-select">
+                    <option value="">Select camera</option>
+                </select>
+            </div>
+        </div>
+        <div class="attendance_wrap">
+            <div class="capture-wrap">
+
+                <img src="~/images/camera-capture.png" class="img-responsive mx-auto largeDev">
+                <img src="~/images/captureMobile.png" class="img-responsive mx-auto smallDev">
+                <video id="stream" playsinline autoplay></video>
+                <canvas id="capture" width="480" height="320"></canvas>
+                <input type="image" disabled="disabled" id="imgcap" style="width:320px;height:240px;display:none" />
+                <input type="text" id="txtimgcap" style="display:none" asp-for="CapturedFile" />
+            </div>
+            <div class="text-center p20">                
+                <button id="btn-capture" type="submit" class="btn btn-success" style="margin-bottom:8px;"> Take Snapshot and upload</button>
+            </div>
+            <div class="text-center p20">
+                <input type="file" class="form-control mt10 mb10" id="imgInp" asp-for="UploadedFile" />
+                <button id="btn-upload" type="submit" class="btn btn-success" style="margin-bottom:8px;"> Upload the selected photo</button>
+            </div>
+        </div>
+        @if (ViewBag.Result != null)
+        {
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="bg-success createperson" id="divResult" style="text-align:center">
+                        @ViewBag.Result
+                    </div>
+                </div>
+            </div>
+        }
+    </form>
+
+<script src="~/js/main.js"></script>
+<script language="javaScript">
+
+    // The buttons to start & stop stream and to capture the image
+    var btnCapture = document.getElementById("btn-capture");
+
+    // The stream & capture
+    var stream = document.getElementById("stream");
+    var capture = document.getElementById("capture");
+
+    // The video stream
+    var cameraStream = null;
+
+    // Attach listeners
+    btnCapture.addEventListener("click", captureSnapshot);
+    $(window).on("load", startStreaming());
+    $(window).on('beforeunload', function () {
+        stopStreaming();
+    });
+
+    imgInp.onchange = evt => {
+        const [file] = imgInp.files
+        if (file) {
+            imgcap.src = URL.createObjectURL(file);
+            txtimgcap.value = imgcap.src;
+            imgcap.style.display = 'block';
+            alert(imgcap.src);            
+        }
+    }
+
+    $(document).ready(function () {
+        loadType = '@ViewBag.imgcap';
+
+        if (loadType == '') {
+            $(window).on("load", startStreaming());
+        }
+        else {
+            $(window).on("load", stopStreaming());
+        }
+    });
+
+    //function startStreaming() {
+
+    //    var mediaSupport = 'mediaDevices' in navigator;
+
+    //    if (mediaSupport && null == cameraStream) {
+
+    //        navigator.mediaDevices.getUserMedia({ video: true })
+    //            .then(function (mediaStream) {
+
+    //                cameraStream = mediaStream;
+
+    //                stream.srcObject = mediaStream;
+
+    //                stream.play();
+    //                btnStart.style.display = "none";
+    //                btnStop.style.display = "inline-block";
+    //            })
+    //            .catch(function (err) {
+    //                btnStart.style.display = "inline-block";
+    //                btnStop.style.display = "none";
+    //                console.log("Unable to access camera: " + err);
+    //            });
+    //    }
+    //    else {
+    //        btnStart.style.display = "inline-block";
+    //        btnStop.style.display = "none";
+    //        alert('Your browser does not support media devices.');
+
+    //        return;
+    //    }
+    //}
+
+    // Stop Streaming
+    function stopStreaming() {
+
+        if (null != cameraStream) {
+
+            var track = cameraStream.getTracks()[0];
+
+            track.stop();
+            stream.load();
+            btnStart.style.display = "inline-block";
+            btnStop.style.display = "none";
+            cameraStream = null;
+        }
+    }
+
+    function captureSnapshot() {
+
+        if (null != videoElement.srcObject) {
+            divresult=document.getElementById('divResult')
+            if (divresult!= undefined) {
+                divresult.innerHTML = "";
+                divresult.style.display = 'none';
+            }
+            var ctx = capture.getContext('2d');
+            var img = document.getElementById("imgcap");
+            img.style.display = 'none';
+            ctx.drawImage(videoElement, 0, 0, capture.width, capture.height);
+
+            img.src = capture.toDataURL("image/png");
+            img.width = 320;
+            var txt = document.getElementById("txtimgcap")
+            txt.value = img.src;            
+        }
+    }
+</script>

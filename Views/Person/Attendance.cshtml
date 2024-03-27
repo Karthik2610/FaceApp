@@ -1,0 +1,428 @@
+﻿@model FaceApp.Models.Face
+@{
+	ViewData["Title"] = "Attendance";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	if (ViewBag.IsError)
+	{		
+		<script>
+			$(document).ready(function () {
+			ShowAttendanceTypeError()
+			});
+		</script>
+	}
+}
+
+
+<form asp-action="Attendance" id="Identifyform" enctype="multipart/form-data" autocomplete="off">
+	@Html.HiddenFor(m => m.IsContinueWithCheckOut)
+	@Html.HiddenFor(m => m.CheckOutDate)
+	@Html.HiddenFor(m => m.LastCheckInDate)
+	<div class="pageTitle_wrap">
+		<h6>Attendance</h6>
+		<div class="select">
+			<select name="" id="videoSource" class="custom-select">
+				<option value="">Select camera</option>
+			</select>
+		</div>
+	</div>
+	<div class="attendance_wrap">
+
+
+
+		<div class="capture-wrap">
+			<img src="~/images/camera-capture.png" class="img-responsive mx-auto largeDev">
+			<img src="~/images/captureMobile.png" class="img-responsive mx-auto smallDev">
+			<video id="stream" playsinline autoplay></video>
+			<canvas id="capture" width="480" height="320"></canvas>
+			@if (ViewBag.imgcap != null)
+			{
+				<input id="attendanceImg" type="image" disabled="disabled" src="@ViewBag.imgcap" />
+			}
+			else
+			{
+				<input type="image" disabled="disabled" id="imgcap" name="imgcap" style="display:none" />
+			}
+			<input type="text" id="txtimgcap" style="display:none" asp-for="CapturedFile" />
+			<input type="text" id="browerName" name="browerName" style="display:none" />
+		</div>
+
+		@*<div>
+				<label class="dFlex_JC">Mode of transportation</label>
+				<div class="trmRadio_wrap jCenter">
+					<div>
+						@Html.RadioButtonFor(m => m.Modeoftransportation, "Public Transportation", new { @class = "radio", @id = "radio1" })
+						<label class="trMode" for="radio1">Public Transportation</label>
+					</div>
+
+					<div>
+						@Html.RadioButtonFor(m => m.Modeoftransportation, "Guardian", new { @class = "radio", @id = "radio2" })
+						<label class="trMode" for="radio2">Guardian</label>
+					</div>
+
+					<div>
+						@Html.RadioButtonFor(m => m.Modeoftransportation, "Self driving", new { @class = "radio", @id = "radio3" })
+						<label class="trMode" for="radio3">Self driving</label>
+					</div>
+				</div>
+				<div class="col-md-12 text-center">
+					@Html.ValidationMessageFor(m => m.Modeoftransportation, "", new { @class = "text-danger" })
+				</div>
+			</div>*@
+
+
+
+		<div class="ta_details">
+            <div class="row clearfix">
+
+                <div class="col-md-3">
+
+                    <div class="clearfix">
+                        <label class="">Mode of transportation</label>
+                        <div class="jCenter">
+                            <div>
+                                @Html.RadioButtonFor(m => m.Modeoftransportation, "Public Transportation", new { @class = "radio", @id = "radio1" })
+                                <label class="trMode" for="radio1">Public Transportation</label>
+                            </div>
+
+                            <div>
+                                @Html.RadioButtonFor(m => m.Modeoftransportation, "Guardian", new { @class = "radio", @id = "radio2" })
+                                <label class="trMode" for="radio2">Guardian</label>
+                            </div>
+
+                            <div>
+                                @Html.RadioButtonFor(m => m.Modeoftransportation, "Self driving", new { @class = "radio", @id = "radio3" })
+                                <label class="trMode" for="radio3">Self driving</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        @Html.ValidationMessageFor(m => m.Modeoftransportation, "", new { @class = "error" })
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="clearfix">
+                        <label class="">Transit Number</label>
+                        <div class="jCenter">
+                            <div>
+                                @Html.TextBoxFor(m => m.TransitNumber, new { placeholder = "Transit Number", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        @Html.ValidationMessageFor(m => m.TransitNumber, "", new { @class = "error" })
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="clearfix">
+                        <label class="">Attendance Type</label>
+                        <div class="jCenter">
+                            <div>
+                                @Html.RadioButtonFor(m => m.AttendanceType, "CheckIn", new { @class = "radio", @id = "radio4" })
+                                <label class="trMode" for="radio4">Check In</label>
+                            </div>
+                            <div>
+                                @Html.RadioButtonFor(m => m.AttendanceType, "CheckOut", new { @class = "radio", @id = "radio5" })
+                                <label class="trMode" for="radio5">Check Out</label>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.AttendanceType, "", new { @class = "error" })
+                </div>
+                <div class="col-md-3 r10">
+
+                    <div class="clearfix">
+                        <label class="control-label" for="LocationId">Location</label>
+                        @Html.DropDownListFor(m => m.LocationId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.LocationList, "Select Location", new { @class = "form-control mr15" })
+                        @Html.ValidationMessageFor(m => m.LocationId, "", new { @class = "error" })
+                    </div>
+                    <div class="mt5">
+                        <label class="control-label" for="ProgramId">Programs</label>
+                        @Html.DropDownListFor(m => m.ProgramId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.ProgramList, "Select Program", new { @class = "form-control mr15" })
+                        @Html.ValidationMessageFor(m => m.ProgramId, "", new { @class = "error" })
+                    </div>
+
+                </div>
+            </div> <!-- End Row -->
+			@*<div class="col-md-12 text-center">
+					@Html.ValidationMessageFor(m => m.Modeoftransportation, "", new { @class = "text-danger" })
+				</div>*@
+		</div>
+
+		<div class="text-center p20 mt15">
+			@*<a href="" id="btn-capture" class="btn btn-lg btn-primary">Take Attendance</a>*@
+			@if (ViewBag.Result != null)
+			{
+				@ViewBag.Result
+				<br />
+				@if (ViewBag.TryAgain != "")
+				{
+					<a href="@Url.Action("Attendance", "Person")" id="btn-Try" class="btn btn-lg btn-primary">Try Again</a>
+				}
+				else
+				{
+					<a href="@Url.Action("Attendance", "Person")" id="btn-Try" class="btn btn-lg btn-primary">Next</a>
+				}
+			}
+			else
+			{
+				<button id="btn-capture" type="submit" class="btn btn-lg btn-success"> Take Attendance</button>
+			}
+
+		</div>
+	</div>
+
+</form>
+
+<!-- Modal -->
+<div id="AttendanceTypePopUp" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Attendance Error Message</h4>
+			</div>
+			<div class="modal-body" id="DivModelBody">
+                <div class="formSection">
+                    @*<div class="row">*@
+                    <lable id="TxtLastCheckInDate" style="display:none">@ViewBag.LastCheckInDate</lable>
+
+                    @if (ViewBag.ErrorOn != "Already Checked-In")
+                    {
+
+                        @if (ViewBag.ErrorOn == "LastCheckOut")
+                        {
+                            <label> Check-Out record not available for Check-In Date - <span style="font-weight:bold"> @ViewBag.LastCheckInDate </span> </label>
+                        }
+                        else
+                        {
+                            <label>No Check-In records available</label>
+                        }
+                    }
+                    else
+                    {
+                        <label>Check-In records available</label>
+                    }
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    @*</div>*@
+                </div>
+				@if (ViewBag.ErrorOn == "LastCheckOut")
+				{
+					<div class="form-group">
+                        <div class='input-group date datetimepicker11' id='datetimepicker11'>
+							@Html.TextBox("TxtCheckOutDate", "", new { type = "text", @placeholder = "mm/dd/yyyy", @class = "form-control date datetimepicker11" })
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                        </div>
+					</div>
+				}
+				</div>
+            <div class="modal-footer text-center">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                @if (ViewBag.ErrorOn == "LastCheckOut")
+                {
+                    <button id="btn-capture" type="button" class="btn btn-lg btn-success" onclick="CheckOutOnClick()">Check-Out & Continue </button>
+                }
+            </div>
+		</div>
+
+	</div>
+</div>
+
+@*<script src="~/lib/jquery/dist/jquery.js"></script>*@
+<script src="~/js/main.js"></script>
+<script language="javaScript">
+
+        // The buttons to start & stop stream and to capture the image
+        var btnCapture = $("#btn-capture")[0];
+        // The stream & capture
+        var stream = document.getElementById("stream");
+        var capture = document.getElementById("capture");
+        var snapshot = document.getElementById("snapshot");
+
+        // The video stream
+        var cameraStream = null;
+
+        // Attach listeners
+        //btnStart.addEventListener("click", startStreaming);
+        //btnStop.addEventListener("click", stopStreaming);
+        if (typeof btnCapture !== 'undefined') {
+            btnCapture.addEventListener("click", captureSnapshot);
+        }
+        var loadType = '';
+
+		$(document).ready(function () {
+            
+            //$('.datetimepicker11').datepicker('setEndDate', new Date());
+
+            loadType = '@ViewBag.imgcap';
+
+
+            if (loadType == '') {
+                $(window).on("load", startStreaming(), selectDefaultBackCamera());
+                //$("#videoSource").change(selectDefaultBackCamera);
+            }
+            else {
+                $(window).on("load", stopStreaming());
+			}
+        });
+
+        $(window).on('beforeunload', function () {
+                stopStreaming();
+            });
+
+
+
+        // Stop Streaming
+        function stopStreaming() {
+
+            if (null != cameraStream) {
+
+                var track = cameraStream.getTracks()[0];
+
+                track.stop();
+                stream.load();
+                alert("stop");
+                cameraStream = null;
+            }
+        }
+
+        function captureSnapshot() {
+            if (null != videoElement.srcObject) {
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+                divresult=document.getElementById('divResult')
+                if (divresult!= undefined) {
+                    divresult.innerHTML = "";
+                    divresult.style.display = 'none';
+                }
+                var ctx = capture.getContext('2d');
+                var img = document.getElementById("imgcap");
+                img.style.display = 'block';
+                ctx.drawImage(videoElement, 0, 0, capture.width, capture.height);
+
+                img.src = capture.toDataURL("image/png");
+                img.width = 480;
+                img.height = 320;
+                var txt = document.getElementById("txtimgcap")
+                if (isFirefox) {
+                    img.style.display = 'none';
+                }
+                txt.value = img.src;
+
+            }
+	}
+
+	$("#LocationId").change(function () {
+		var LocationId = $("#LocationId").val();
+		if (LocationId ==""){
+			$("#ProgramId").empty();
+			$("#CalendarId").empty();
+						var optionhtmlProgram = '<option value="">' + "Select Program" + '</option>';
+			var optionhtmlCalendar = '<option value="">' + "Select Calendar" + '</option>';
+						$("#ProgramId").append(optionhtmlProgram);
+			$("#CalendarId").append(optionhtmlCalendar);
+						$("#ProgramId").val("");
+						$("#CalendarId").val("");
+						return false;
+		}
+
+            $.ajax({
+                type: "get",
+                url: '@Url.Action("GetLocationSelectedData", "Person")',
+                dataType: "json",
+				data: { "LocationId": LocationId},
+				error: function (jqXHR) {
+					SignoutURL(jqXHR);
+				},
+            }).done(function (response) {
+				if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+                else {
+					if (response.result.programs !=null){
+                        var id = $("#ProgramId").val();
+                        var existsid = false;
+						$("#ProgramId").empty();
+						var optionhtml1 = '<option value="">' + "Select Program" + '</option>';
+						$("#ProgramId").append(optionhtml1);
+						$.each(response.result.programs, function (i) {
+							var optionhtml = '<option value="' +
+								response.result.programs[i].Value + '">' + response.result.programs[i].Text + '</option>';
+							if (response.result.programs[i].Selected) {
+                                    existsid = true;
+									id = response.result.programs[i].Value;
+                                }
+							if (response.result.programs[i].Value == id) {
+                                    existsid = true;
+								id = response.result.programs[i].Value;
+                                }
+							$("#ProgramId").append(optionhtml);
+
+
+                            });
+                        if (existsid) {
+							$("#ProgramId").val(id);
+                        } else {
+							$("#ProgramId").val("");
+                        }
+						$("#ProgramId").trigger("change");
+					}
+                }
+            });
+	});
+
+	function ShowAttendanceTypeError() {
+		//$("#AttendanceTypePopUp").modal("show")
+			$('#AttendanceTypePopUp').modal({
+				show: true,
+				keyboard: false,
+				backdrop: 'static'
+			});
+		
+        $('#AttendanceTypePopUp').on('shown.bs.modal', function () {
+			$('.datetimepicker11').datetimepicker({				
+				icons: {
+					time: "fa fa-clock-o",
+					date: "fa fa-calendar",
+					up: "fa fa-arrow-up",
+					down: "fa fa-arrow-down",
+					previous: "fa fa-arrow-left",
+					next: "fa fa-arrow-right"
+                },
+                maxDate: new Date()
+				/*container: '#DivModelBody'*/
+			});			
+		});
+
+		$('#AttendanceTypePopUp').on('hidden.bs.modal', function () {
+			$("#IsContinueWithCheckOut").val(false);
+			$("#CheckOutDate").val("");
+            $("#LastCheckInDate").val("");
+            $("#LocationId").val("");
+            $("#ProgramId").val("");
+            $('input[name=Modeoftransportation]').prop('checked', false);
+            $('input[name=AttendanceType]').prop('checked', false);
+            $('input[Id=radio4]').prop('checked', true);
+            var attendanceImg = document.getElementById("attendanceImg");
+            attendanceImg.style.display = "none";
+            location.href = '@Url.Action("Attendance", "Person")';
+            //var form = document.querySelector('#Identifyform');
+            //form.reset();
+            //startStreaming()
+		});
+		
+	}
+	function CheckOutOnClick() {
+		$("#IsContinueWithCheckOut").val(true);
+		$("#CheckOutDate").val($("#TxtCheckOutDate").val());
+		var TxtLastCheckInDate = $("#TxtLastCheckInDate").text();
+		$("#LastCheckInDate").val(TxtLastCheckInDate);
+		$("#btn-capture").click();
+	}
+</script>

@@ -1,0 +1,408 @@
+﻿@model FaceApp.Models.ViewModels.LocationViewModel
+@{
+	ViewData["Title"] = "Location";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	if (!ViewData.ModelState.IsValid)
+	{
+		<script>
+			$(document).ready(function () {
+				ShowModelpopup()
+			});
+		</script>
+	}
+}
+
+
+@using (Html.BeginForm("Create", "Location", FormMethod.Post, new { enctype = "multipart/form-data", id = "myLocationform", autocomplete = "off", role = "form" }))
+{
+	@Html.HiddenFor(m => m.LocationId)
+	@*<div class="container nospace">
+		<div class="flexWrapper">*@
+
+<div class="contentSection">
+		<div class="pageTitle_wrap">
+			<h6>Location Details</h6>
+		</div>
+
+		<div class="formSection">
+			<div class="row">
+				<div class="col-md-8">
+					<div>
+						@Html.LabelFor(m => m.Name, new { @class = "control-label" })
+						<span style="color:#e85347;"> * </span>
+						@Html.TextBoxFor(m => m.Name, new { placeholder = "Location Name", @class = "inputfile" })
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group mt30">
+						<div class="checkbox checkbox-primary">
+							@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input" })
+							<label for="IsActive">
+								Active
+							</label>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="col-md-7">
+					<div>
+						<label class="control-label" for="Address1">Address 1</label>
+						@Html.TextBoxFor(m => m.Address1, new { placeholder = "Address 1", @class = "inputfile" })
+					</div>
+				</div>
+				<div class="col-md-7">
+					<div>
+						<label class="control-label" for="Address1">Address 2</label>
+						@Html.TextBoxFor(m => m.Address2, new { placeholder = "Address 1", @class = "inputfile" })
+					</div>
+				</div>
+
+			</div>
+
+			<div class="row">
+				<div class="col-md-4">
+					<div>
+						<label class="control-label" for="City">City</label>
+						@Html.TextBoxFor(m => m.City, new { placeholder = "City", @class = "inputfile" })
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div>
+						<label class="control-label" for="State">State</label>
+						@Html.TextBoxFor(m => m.State, new { placeholder = "State", @class = "inputfile" })
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div>
+						<label class="control-label" for="Zip">Zip Code</label>
+						@Html.TextBoxFor(m => m.Zip, new { placeholder = "Zip", @class = "inputfile" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div>
+						<label class="control-label" for="accointing">Accounting Code</label>
+						@Html.TextBoxFor(m => m.AccountingCode, new { placeholder = "Accounting Code", @class = "inputfile" })
+					</div>
+				</div>
+				<div class="col-md-12 text-center">
+					<hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<div class="pageTitle_wrap mt10">
+						<h6>ID Assignments</h6>
+					</div>
+
+					<div class="">
+						<label class="control-label" for="LocationId1">Location ID 1</label>
+						@Html.TextBoxFor(m => m.LocationId1, new { placeholder = "Location Id 1", @class = "inputfile" })
+					</div>
+					<div class="">
+						<label class="control-label" for="LocationId2">Location ID 2</label>
+						@Html.TextBoxFor(m => m.LocationId2, new { placeholder = "Location Id 2", @class = "inputfile" })
+					</div>
+					<div class="">
+						<label class="control-label" for="LocationId3">Location ID 3</label>
+						@Html.TextBoxFor(m => m.LocationId3, new { placeholder = "Location Id 3", @class = "inputfile" })
+					</div>
+
+
+					<div class="pageTitle_wrap mt10">
+						<h6>Geo Location</h6>
+					</div>
+					<div class="">
+						<label class="control-label" for="Latitude">Latitude</label>
+						@Html.TextBoxFor(m => m.Latitude, new { placeholder = "Latitude", @class = "inputfile" })
+					</div>
+					<div class="">
+						<label class="control-label" for="Longitude">Longitude</label>
+						@Html.TextBoxFor(m => m.Longitude, new { placeholder = "Longitude", @class = "inputfile" })
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="">
+						<div class="pageTitle_wrap mt10">
+							<h4>Add Programs</h4>
+						</div>
+						<div class="">
+							<label class="control-label" for="ProgramId">Programs</label>
+							@*<span style="color:#e85347;"> * </span>*@
+							<div class="d-flex">
+								@Html.DropDownListFor(m => m.ProgramId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.ProgramList, "Select Program", new { @class = "form-control mr15" })
+								<button class="btn btn-sm btn-success" type="button" onclick="AddProgramtoLocation()">Add</button>
+							</div>
+						</div>
+
+						<div class="mt10">
+							<div class="grid_section">
+								<div class="table-responsive">
+									<table class="table table-bordered" id="tblProgramList">
+										<thead>
+											<tr>
+												<th style="display:none">
+													LocationProgramDetailsId
+												</th>
+												<th style="display:none">
+													LocationId
+												</th>
+												<th style="display:none">
+													ProgramId
+												</th>
+												<th style="display:none">
+													ProgramName
+												</th>
+												<th> Programs </th>
+												<th width="10%"> Action </th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (Model != null && Model.LocationProgramList != null)
+											{
+												for (int i = 0; i < Model.LocationProgramList.Count; i++)
+												{
+													<tr>
+														<td style="display:none">
+															@Model.LocationProgramList[i].LocationProgramDetailsId
+														</td>
+														<td style="display:none">
+															@Model.LocationProgramList[i].LocationId
+														</td>
+														<td style="display:none">
+															@Model.LocationProgramList[i].ProgramId
+														</td>
+														<td style="display:none">
+															@Model.LocationProgramList[i].ProgramName
+														</td>
+														<td>
+
+															@Html.HiddenFor(m => Model.LocationProgramList[i].LocationProgramDetailsId)
+															@Html.HiddenFor(m => Model.LocationProgramList[i].LocationId)
+															@Html.HiddenFor(m => Model.LocationProgramList[i].ProgramId)
+															@Html.HiddenFor(m => Model.LocationProgramList[i].ProgramName)
+															@Model.LocationProgramList[i].ProgramName
+														</td>
+														<td class="text-center"> <a href="javascript:;" onclick="ProgramListDelete(@Model.LocationProgramList[i].LocationProgramDetailsId,this)" class="text-primary action-icon" aria-label="Delete"><img src="~/images/status-out.png"></a></td>
+													</tr>
+												}
+											}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-12">
+					<hr>
+				</div>
+
+			</div>
+
+			<div class="col-md-12 text-center">
+				<div class="btn-wrapper justify_sb">
+					<a href="@Url.Action("Index", "Location")" class="btn btn-lg btn-secondary">Cancel</a>
+					<button class="btn btn-lg btn-success" type="submit">Save</button>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+
+	<!-- Modal -->
+	<div id="Program" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">There are some missing fields that are required to save a form</h4>
+				</div>
+				<div class="modal-body">
+					<div class="pageTitle_wrap">
+						<h6>Please review the below fields before saving</h6>
+					</div>
+					<div class="formSection">
+						<div class="row">
+							@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+
+	<!-- Modal -->
+	<div id="LocationProgramsError" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Please review the information below</h4>
+				</div>
+				<div class="modal-body">
+					@*<div class="pageTitle_wrap">
+						<h6>Please review the below fields before adding</h6>
+					</div>*@
+					<div class="formSection">
+						<div class="row">
+							<div>
+								<label id="ErrorPrograms" class="error ml25" style="display:none"> Please Select Program </label>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+
+}
+@*</div>
+	</div>*@
+<script src="~/js/main.js"></script>
+<script>
+
+	function AddProgramtoLocation() {
+		$("#ErrorPrograms").text("");
+		document.getElementById("ErrorPrograms").style.display = "none";
+		var ProgramId = $("#ProgramId").val();
+		var ProgramIdSelect = document.getElementById("ProgramId");
+		var ProgramName = ProgramIdSelect.options[ProgramIdSelect.selectedIndex].text;
+		var Error = false;
+
+		if (ProgramId == null || ProgramId == "") { document.getElementById("ErrorPrograms").removeAttribute("style"); $("#ErrorPrograms").text("Please Select Program"); Error = true; }
+		else {
+			var table = $("#tblProgramList tr:gt(0)");
+			$(table).each(function () {
+				var this_row = $(this);
+				var Id = $.trim(this_row.find('td:eq(2)').html());
+				if (Id == ProgramId) {
+					document.getElementById("ErrorPrograms").removeAttribute("style");
+					$("#ErrorPrograms").text(ProgramName + " already added in the list");
+					Error = true;
+				}
+			});
+		}
+
+		if (Error) { ShowLocationProgramsErrorpopup(); return false };
+
+		var rowcount = $('#tblProgramList tbody tr').length;
+
+		if ($('#tblProgramList tbody:first tr')[0] !=null && $('#tblProgramList tbody:first tr')[0].innerText == 'No Data Found') {
+			$("#tblProgramList").find("tr:gt(0)").remove();
+			rowcount = 0;
+		}
+
+		AddProgramListTableRow(rowcount, 0, 0,ProgramId, ProgramName)
+
+		$("#ProgramId").val("");
+	}
+
+	function AddProgramListTableRow(count, LocationProgramDetailsId, LocationId,ProgramId, ProgramName) {
+		$('#tblProgramList').append('<tr>'
+			+ '<td style="display:none">' + LocationProgramDetailsId + '</td>'
+			+ '<td style="display:none">' + LocationId + '</td>'
+			+ '<td style="display:none">' + ProgramId + '</td>'
+			+ '<td style="display:none">' + ProgramName + '</td>'
+			+ '<td><input type="hidden" id="ProgramCalendarList_' + count + '__ProgramCalendarDetailsId" name="LocationProgramList[' + count + '].LocationProgramDetailsId" value="' + LocationProgramDetailsId + '"/>'
+			+ '<input type="hidden" id="ProgramCalendarList_' + count + '__ProgramId" name="LocationProgramList[' + count + '].LocationId" value="' + LocationId + '"/>'
+			+ '<input type="hidden" id="ProgramCalendarList_' + count + '__CalendarId" name="LocationProgramList[' + count + '].ProgramId" value="' + ProgramId + '"/>'
+			+ '<input type="hidden" id="ProgramCalendarList_' + count + '__CalendarName" name="LocationProgramList[' + count + '].ProgramName" value="' + ProgramName + '"/>'
+			+ ' '+ ProgramName +'</td>'
+            + '<td class="text-center"><a href="javascript:;" onclick="ProgramListDelete(' + LocationProgramDetailsId + ',this)" class="text-primary action-icon" aria-label="Delete"><img src="/images/status-out.png" ></a></td></tr>')
+	}
+
+
+	function ProgramListDelete(id, obj) {
+		document.getElementById("ErrorPrograms").style.display = "none";
+        $("#ErrorPrograms").text("");
+        var IsAlredyMapping = false;
+        if (id > 0) {
+
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("GetLocationProgramScheduleStatus", "Location")',
+                dataType: "json",
+                data: { "LocationProgramDetailsId": id },
+                error: function (jqXHR) {
+                    SignoutURL(jqXHR);
+                },
+            }).done(function (response) {
+                if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+                else {
+                    if (response.IsLocationProgramScheduled != null) {
+                        IsAlredyMapping = response.IsLocationProgramScheduled;
+                        if (!IsAlredyMapping) {
+                            DeleteItem(id, obj)
+						} else {
+							document.getElementById("ErrorPrograms").removeAttribute("style");
+							$("#ErrorPrograms").text("Unable to remove this program already assigned to persons");
+							ShowLocationProgramsErrorpopup();
+                        }
+                    }
+                }
+            });
+
+        }
+        else {
+            DeleteItem(id, obj)
+        }
+    }
+
+
+    function DeleteItem(id, obj) {
+        $(obj).closest('tr').remove();
+        var rowcount = $('#tblProgramList tr').length - 1;
+        if (rowcount > 0) {
+            var count = 0;
+            var table = $("#tblProgramList tr:gt(0)");
+            $("#tblProgramList").find("tr:gt(0)").remove();
+            $(table).each(function () {
+                var this_row = $(this);
+                var LocationProgramDetailsId = $.trim(this_row.find('td:eq(0)').html());
+                var LocationId = $.trim(this_row.find('td:eq(1)').html());
+                var ProgramId = $.trim(this_row.find('td:eq(2)').html());
+                var ProgramName = $.trim(this_row.find('td:eq(3)').html());
+                AddProgramListTableRow(count, LocationProgramDetailsId, LocationId, ProgramId, ProgramName);
+                count++;
+            });
+        }
+    }
+
+	function ShowModelpopup() {
+		$("#Program").modal()
+	}
+
+	function ShowLocationProgramsErrorpopup() {
+		$("#LocationProgramsError").modal()
+	}
+
+</script>

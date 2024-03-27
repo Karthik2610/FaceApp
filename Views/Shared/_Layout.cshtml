@@ -1,0 +1,206 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@{
+	var sessionBackToAdmin = new Byte[20];
+	var sessionIsAdmin = new Byte[20];
+	string ShowBackToLogin = "";
+	string IsAdmin = "";
+	bool nameBTL = Context.Session.TryGetValue("ShowBackToLogin", out sessionBackToAdmin);
+	bool nameadmin = Context.Session.TryGetValue("LoginIsAdmin", out sessionIsAdmin);
+	if (nameBTL)
+	{
+		ShowBackToLogin = System.Text.Encoding.UTF8.GetString(sessionBackToAdmin);
+	}
+	if (nameadmin)
+	{
+		IsAdmin = System.Text.Encoding.UTF8.GetString(sessionIsAdmin);
+	}
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MemberTracker</title>
+
+    @*<environment include="Development">*@
+    <link rel="stylesheet" href="~/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/bootstrap-datepicker.min.css">
+    @*<link rel="stylesheet" href="~/css/site.css" />*@
+
+	<link rel="stylesheet" href="~/css/font-awesome.css"/>
+
+    <link rel="stylesheet" href="~/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="~/css/style-1.css" />
+    @*<link rel="stylesheet" href="~/css/bootstrap.css" />*@
+    <link type="text/css" rel="stylesheet" href="~/css/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/jsgrid-theme.min.css" />
+
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/fontawesome.js"></script>
+    <script src="~/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script type="text/javascript" src="~/js/jsgrid.min.js"></script>
+
+    @*</environment>
+        <environment exclude="Development">
+                <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        </environment>*@
+
+
+
+    @Html.Raw(JavaScriptSnippet.FullScript)
+</head>
+<body>
+	@*<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">FaceApp</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li><a asp-area="" asp-controller="Home" asp-action="Index">Create</a></li>
+						<li><a asp-area="" asp-controller="Home" asp-action="Identify">Identify</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>*@
+	@*<header></header>*@
+    <div class="container nospace">
+        <div class="blueStrip">
+            @if (IsAdmin == "True")
+            {
+                <a href="@Url.Action("AttendanceReport", "Report")">Report</a>
+            }
+            @if (ShowBackToLogin == "True")
+            {
+                <a href="@Url.Action("BackToLogin", "Account")">Back to Admin</a>
+            }
+            @if (ShowBackToLogin != "True")
+            {
+                <a href="@Url.Action("ChangePassword", "Account")">Change Password</a>
+            }
+            <a href="@Url.Action("LogOut", "Account")">Logout</a>
+        </div>
+
+        <div class="flexWrapper">
+            @*<div class="head_sec">
+                <div class="container mob_p0">
+                    <div class="icon-menu">
+                        <a href="~/Home/Index"><img src="~/images/Attendance.png"> Attendance </a>
+                        <a href=""><img src="~/images/People.png"> People </a>
+                        <a href="~/Users/Index"><img src="~/images/user.png"> Users </a>
+                        <a href=""><img src="~/images/program.png"> Program </a>
+                        <a href=""><img src="~/images/services.png"> Services </a>
+                        <a href=""><img src="~/images/location.png"> Location </a>
+                        <a href=""><img src="~/images/clients.png"> Clients </a>
+                    </div>
+                </div>
+            </div>*@
+
+            <div class="leftNav_wrap">
+                <ul class="iconNav">
+                    <li><a href="@Url.Action("Attendance", "Person")" class=""> <img src="~/images/Attendance.png"> Attendance</a></li>
+                    <li><a href="@Url.Action("DailyWeeklyReport", "Report")" class=""> <img src="~/images/whoshere.png"> Who's Here</a></li>
+                    @*<li><a href="" class=""> <img src="~/images/People.png"> People</a></li>*@
+                    <li><a href="@Url.Action("Index", "Person")" class=""> <img src="~/images/People.png"> Persons</a></li>
+                    @if (IsAdmin == "True")
+                    {
+                        <li><a href="@Url.Action("Index", "Users")" class=""> <img src="~/images/User.png"> Users</a></li>
+                    }
+                    <li><a href="@Url.Action("Index", "Program")" class=""> <img src="~/images/Program.png"> Program</a></li>
+                    <li><a href="" class=""> <img src="~/images/Services.png"> Services</a></li>
+                    <li><a href="@Url.Action("Index", "Location")" class=""> <img src="~/images/Location.png"> Locations</a></li>
+                    <li><a href="" class=""> <img src="~/images/Clients.png"> Clients</a></li>
+                    <li><a href="@Url.Action("Index", "Settings")" class=""> <img src="~/images/settings.png"> Settings</a></li>
+                </ul>
+            </div>
+            <div class="mobile_Nav">
+                <ul class="iconNav_m">
+                    <li><a href="@Url.Action("Attendance", "Person")" class=""> <img src="~/images/Attendance.png"> Attendance</a></li>
+                    <li><a href="@Url.Action("DailyWeeklyReport", "Report")" class=""> <img src="~/images/whoshere.png"> Who's Here</a></li>
+                    @*<li><a href="" class=""> <img src="~/images/People.png"> People</a></li>*@
+                    <li><a href="@Url.Action("Index", "Person")" class=""> <img src="~/images/People.png"> Persons</a></li>
+                    @if (IsAdmin == "True")
+                    {
+                        <li><a href="@Url.Action("Index", "Users")" class=""> <img src="~/images/User.png"> Users</a></li>
+                    }
+                    <li><a href="@Url.Action("Index", "Program")" class=""> <img src="~/images/Program.png"> Program</a></li>
+                    <li><a href="" class=""> <img src="~/images/Services.png"> Services</a></li>
+                    <li><a href="@Url.Action("Index", "Location")" class=""> <img src="~/images/Location.png"> Locations</a></li>
+                    <li><a href="" class=""> <img src="~/images/Clients.png"> Clients</a></li>
+                    <li><a href="@Url.Action("Index", "Settings")" class=""> <img src="~/images/settings.png"> Settings</a></li>
+                </ul>
+            </div>
+
+
+            <div class="contentSection capture-right">
+
+                @RenderBody()
+                @*<div class="content text-center">
+                    <h5 class="mob-heading1">
+                        Attendance
+                    </h5>
+                    <div class="capture-wrap">
+                        <img src="~/images/camera-capture.png" class="img-responsive mx-auto">
+                    </div>
+                    <div class="text-center p20 mt50">
+                        <a href="" class="btn btn-lg btn-primary">Take Attendance</a>
+                    </div>
+                </div>*@
+
+            </div>
+        </div>
+        @*<div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2021 - FaceApp</p>
+            </footer>
+        </div>*@
+        @*<environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>*@
+        <script type='text/javascript'>
+            $(function () {
+                $('.datepicker').datepicker({
+                    format: "mm/dd/yyyy",
+                    language: "es",
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            });
+        </script>
+        @RenderSection("Scripts", required: false)
+</body>
+</html>

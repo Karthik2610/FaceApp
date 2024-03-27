@@ -1,0 +1,234 @@
+﻿
+@model FaceApp.Models.ViewModels.UsersListViewModel
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Index", "Users", FormMethod.Post, new { autocomplete = "off" }))
+{
+
+
+    @*<div class="contentSection">*@
+    <div class="pageTitle_wrap">
+        <h6>User Listing</h6>
+        <a href="@Url.Action("Create", "Users")" class="btn btn-secondary">New User</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label class="control-label" for="UserName">User Name</label>
+            <span style="color:#e85347;"> * </span>
+            @Html.TextBoxFor(m => m.UserName, new { placeholder = "User Name", @class = "inputfile" })
+            <label id="ErrorUserName" class="error"></label>
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="Email">Email</label>
+            <span style="color:#e85347;"> * </span>
+            @Html.TextBoxFor(m => m.Email, new { placeholder = "Email", @class = "inputfile" })
+            <label id="ErrorEmail" class="error"></label>
+        </div>
+        <div class="col-md-3 col-sm-12" id="btnSearch">
+            <button class="btn btn-md btn-success mt27" type="button" id="btnLoadSearch">Search</button>
+            <button type="button" id="btnClearSearch" class="btn btn-success mt27">Clear</button>
+        </div>
+    </div>
+
+    <div class="grid_section">
+        <div class="table-responsive" id="gridSection">
+            <div id="grid" class="mb15"></div>
+            @{ Html.RenderPartial("_PartialGridPagination"); }
+        </div>
+    </div>
+}
+
+<script>
+
+$(document).ready(function () {
+           $("#grid").jsGrid({
+               //height: "51vh",
+               width: "100%",
+
+               //Data Manipulation
+               sorting: true,
+               paging: false,
+               autoload: true,
+               editing: false,
+               inserting: false,
+               resizing: true,
+               selecting : false,
+               editFields_forBatch: [],
+               _editingRows_forBatch: [],
+               footerrow: true,
+               userDataOnFooter: true,
+               //Data Manipulation
+               controller: {
+                   loadData: function (item) {
+                       var pgstart = item != null && item.start != null ? item.start : 1;
+                       var pgend = item != null && item.end != null ? item.end : $("#pageSize").val();
+                       var sort = item != null && item.sortColumn != null ? item.sortColumn : 'UserName';
+                       var sortorder = item != null && item.sortOrder != null ? item.sortOrder : 'asc';
+                       bindmodel("NoPost");
+                       var Model = {
+                           UserName: model.UserName,
+                           Email: model.Email
+                       };
+                       var d = $.Deferred();
+                       $.ajax({
+                           type: "POST",
+                           url: '@Url.Action("LoadData", "Users")',
+                           dataType: "json",
+                           data: { "model": Model, "pagestart": pgstart, "pageend": pgend, sortColumn: sort, sortOrder: sortorder },
+                           error: function (jqXHR) {
+                               SignoutURL(jqXHR);
+                           },
+                       }).done(function (response) {
+                           if (response.message == "Error") {
+                               window.location.href = ErrorPageUrl;
+                           }
+                           else {
+                               $("#btnPrevious").prop('disabled', false);
+                               $("#btnNext").prop('disabled', false);
+                               var pagesize = $("#pageSize").val();
+                               pageend = response.pageEnd;
+                               pagestart = response.pageStart;
+                               totalRecords = response.TotalRecords;
+                               inputChange = false;
+                               $("#PageRange")[0].innerText = "Showing Records: " + (totalRecords == 0 ? totalRecords : parseInt(pagestart)) + " - " + (pageend > totalRecords ? totalRecords : pageend) + " of " + totalRecords;
+                               if (response.response.length > 0) {
+                                   if (response.pageStart == 1 && response.TotalRecords != 1 && pagesize <= response.TotalRecords) {
+                                       gTotalRecords = response.TotalRecords;
+                                       $("#btnPrevious").prop('disabled', 'disabled');
+                                       $("#btnNext").removeAttr('style');
+                                   }
+                                   if (response.pageStart > 1 && response.pageEnd <= response.TotalRecords) {
+                                       gTotalRecords = response.TotalRecords;
+                                       $("#btnNext").removeAttr('style');
+                                       $("#btnPrevious").removeAttr('style');
+                                   }
+                                   if (response.TotalRecords != 1 && pagesize <= response.TotalRecords && response.pageEnd >= response.TotalRecords) {
+                                       gTotalRecords = response.TotalRecords;
+                                       $("#btnNext").prop('disabled', 'disabled');
+                                       $("#btnPrevious").removeAttr('style');
+                                   }
+                                   if (response.pageEnd >= response.TotalRecords && pagesize >= response.TotalRecords) {
+                                       $('#btnPrevious').prop('disabled', 'disabled');
+                                       $("#btnNext").prop('disabled', 'disabled');
+                                   }
+                               }
+                               else {
+                                   $('#btnPrevious').prop('disabled', 'disabled');
+                                   $("#btnNext").prop('disabled', 'disabled');
+                               }
+                           }
+
+                           d.resolve(response.response);
+                       });
+
+                       return d.promise();
+                   }
+               },
+               onDataLoaded: function () {
+                   $('.jsgrid-load-shader').css('display', 'none');
+                   $('.jsgrid-load-panel').css('display', 'none');
+               },
+
+               onRefreshed: function (args) {
+                   //
+               },
+               fields: [
+                   { name: "UserName", type: "text", title: "User Name", readOnly: true, width: 150 },
+                   { name: "UserEmpId", type: "text", title: "User Emp Id", readOnly: true, width: 150, sorting: true },
+				   { name: "SecurityGroup", type: "text", title: "Security Group", readOnly: true, width: 150, sorting: true},
+                   { name: "Email", type: "text", title: "User Email", readOnly: true, width: 200 },
+                   {
+                        name: "UserId", type: "button", title: "Actions", readOnly: true, width: 80,
+                       cellRenderer: function (value, item) {
+                           model = @Html.Raw(Json.Serialize(Model));
+                                @*<td>
+									@if (Model.IsAdmin && Model.LoginUserId != item.UserId){<a href="@Url.Action("ProxyLogin", "Users",new { UserId = @item.UserId })" class="statusInOut"><img src="~/images/ProxyLogin.svg"></a>}
+                                    @if ((!item.IsAdmin || (item.UserId == Model.LoginUserId))) {<a href="@Url.Action("Create", "Users", new { UserId = @item.UserId })" class=""> <img src="~/images/Edit Icon.svg"> </a>}
+							    </td>*@
+                           if ((model.isAdmin && model.loginUserId != item.UserId) && (!item.IsAdmin || (item.UserId == model.loginUserId))) {
+							   return "<td><a data-tooltip='Click to Edit' href='@Url.Action("Create", "Users")?UserId=" + value + "' class='ttBtn text-primary action-icon' aria - label='Edit' ><img src='/images/Edit Icon.svg'></a > <a data-tooltip='Click to proxy' href='@Url.Action("ProxyLogin", "Users")?UserId=" + value + "' class='ttBtn text-primary action-icon' aria - label='proxy' ><img src='/images/ProxyLogin.svg'></a > </td >";
+                           } else if (model.isAdmin && model.loginUserId != item.UserId) {
+							   return "<td><a data-tooltip='Click to Edit' href='@Url.Action("Create", "Users")?UserId=" + value + "' class='ttBtn text-primary action-icon' aria - label='Edit' ><img src='/images/Edit Icon.svg'></a ></td >";
+                           } else if ((!item.IsAdmin || (item.UserId == model.loginUserId))) {
+							   return "<td><a data-tooltip='Click to proxy' href='@Url.Action("ProxyLogin", "Users")?UserId=" + value + "' class='ttBtn text-primary action-icon' aria - label='proxy' ><img src='/images/ProxyLogin.svg'></a > </td >";
+                           }
+                       },
+                        sorting: false
+                    }
+               ],
+               _sortData: function () {
+                   defaultSortColumn = this._sortField.name;
+                   defaultSortOrder = this._sortField._grid._sortOrder;
+                   bindmodel();
+               },
+           });
+           //Pagination Declarations
+           pagestart = 1;
+           pageend = 0;
+           totalRecords = 0;
+           // Previous page Navigation
+           $("#btnPrevious").click(function () {
+               var pagesize = $("#pageSize").val();
+               $("#btnPrevious").prop('disabled', 'disabled');
+               pagestart = parseInt(parseInt(pagestart) - parseInt(pagesize));
+               pageend = parseInt(parseInt(pageend) - parseInt(pagesize));
+               bindmodel();
+           });
+
+           // Next page Navigation
+           $("#btnNext").click(function () {
+               $("#btnNext").prop('disabled', 'disabled');
+               $('.jsgrid-load-shader').css('display', 'block');
+               $('.jsgrid-load-panel').css('display', 'block');
+               var pagesize = $("#pageSize").val();
+               pagestart = parseInt(parseInt(pagestart) + parseInt(pagesize));
+               pageend = parseInt(parseInt(pageend) + parseInt(pagesize));
+               bindmodel();
+           });
+
+           $("#pageSize").on('change', function () {
+               pagestart = parseInt(1);
+               pageend = parseInt(this.value);
+               bindmodel();
+           }).focus(function () {
+               previousPageSize = this.value;
+           });
+          $("#btnLoadSearch").click(function () {
+                $('#ErrorUserName').text("");
+                var UserName = $("#UserName").val();
+                var Email = $("#Email").val();
+                if ((UserName != null && UserName.trim() != "") || (Email != null && Email.trim() != "")) {
+                    var pagesize = $("#pageSize").val();
+                    pagestart = parseInt(1);
+                    pageend = parseInt(pagesize);
+                    bindmodel();
+                } else {
+                    $('#ErrorUserName').text("At least enter the value in any one of the fields")
+                }
+            });
+
+            $("#btnClearSearch").click(function () {
+                $('#ErrorUserName').text("");
+                $("#UserName").val("");
+                $("#Email").val("");
+                bindmodel();
+            });
+    })
+
+    function bindmodel(mode) {
+             model = @Html.Raw(Json.Serialize(Model));     
+             model.UserName = $("#UserName").val();
+             model.Email = $("#Email").val();
+                       if (mode != 'NoPost') { //To avoid loaddata function post.
+                           $('.jsgrid-load-shader').css('display', 'block');
+                           $('.jsgrid-load-panel').css('display', 'block');
+                           var paginations = { model: model,start: parseInt(pagestart), end: parseInt(pageend), sortColumn: defaultSortColumn, sortOrder: defaultSortOrder };
+                           $jgrid.jsGrid("loadData", paginations);
+                       }
+    }
+
+</script>

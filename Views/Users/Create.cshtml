@@ -1,0 +1,389 @@
+﻿@model FaceApp.Models.ViewModels.UsersViewModel
+@{
+	ViewData["Title"] = "Users";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	if (!ViewData.ModelState.IsValid)
+	{
+		<script>
+			$(document).ready(function () {
+				ShowModelpopup()
+			});
+		</script>
+	}
+}
+
+
+@using (Html.BeginForm("Create", "Users", FormMethod.Post, new { enctype = "multipart/form-data", id = "myUsersform", autocomplete = "off", role = "form" }))
+{
+	@Html.HiddenFor(m => m.UserId)
+	@Html.HiddenFor(m => m.IsPasswordChanged)
+
+	@*<div class="container nospace">
+		<div class="flexWrapper">*@
+
+	@*<div class="contentSection">*@
+	<div class="pageTitle_wrap">
+		@if (Model.UserId > 0)
+		{
+			<h6>User Demographics</h6>
+		}
+		else
+		{
+			<h6>User Demographics</h6>
+		}
+
+		@*<button type="submit" class="btn btn-success">Save</button>*@
+	</div>
+	<div class="formSection">
+		<div class="row">
+			<div class="col-md-4">
+				<div>
+					@Html.LabelFor(m => m.LastName, new { @class = "control-label" })
+					<span style="color:#e85347;"> * </span>
+					@Html.TextBoxFor(m => m.LastName, new { placeholder = "Last Name", @class = "inputfile" })
+					@*@Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger error" })*@
+				</div>
+
+			</div>
+			<div class="col-md-4">
+				<div>
+					@Html.LabelFor(m => m.FirstName, new { @class = "control-label" })
+					<span style="color:#e85347;"> * </span>
+					@Html.TextBoxFor(m => m.FirstName, new { placeholder = "First Name", @class = "inputfile" })
+					@*@Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger error" })*@
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div>
+					@Html.LabelFor(m => m.MiddleInitial, new { @class = "control-label" })
+					@Html.TextBoxFor(m => m.MiddleInitial, new { placeholder = "Middle Initial", @class = "inputfile" })
+				</div>
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<div>
+					@Html.LabelFor(m => m.Email, new { @class = "control-label" })
+					<span style="color:#e85347;"> * </span>
+						@Html.TextBoxFor(m => m.Email, new {  placeholder = "Email", @class = "inputfile" })
+					@*@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger error" })*@
+				</div>
+			</div>
+			<div class="col-md-4">
+				@Html.LabelFor(m => m.Password, new { @class = "control-label" })
+				<span style="color:#e85347;"> * </span>
+				@Html.TextBoxFor(m => m.Password, new { @type = "Password", placeholder = "Password", @class = "inputfile", @onchange = "OnchangePassword()" })
+				@*@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger error" })*@
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div>
+					@Html.LabelFor(m => m.SecurityGroup, new { @class = "control-label" })
+					@Html.TextBoxFor(m => m.SecurityGroup, new { placeholder = "Security Group", @class = "inputfile" })
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="form-group mt30">
+					<div class="checkbox checkbox-primary">
+						@*@Html.TextBoxFor(m => m.IsActive, new { type = "checkbox", @placeholder = "mm/dd/yyyy", @class = "form-control" })*@
+						@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input" })
+						<label for="IsActive">
+							Active
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<hr>
+			</div>
+			<div class="col-md-6">
+				@Html.LabelFor(m => m.UserEmpId, new { @class = "control-label" })
+				@Html.TextBoxFor(m => m.UserEmpId, new { placeholder = "User Employer ID", @class = "inputfile" })
+				@*@Html.ValidationMessageFor(m => m.UserEmpId, "", new { @class = "text-danger" })*@
+			</div>
+			@*<div class="col-md-12 text-center">
+					<hr>
+				</div>*@
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="">
+					<label class="control-label" for="LocationId">Location</label>
+
+					<div class="d-flex">
+						@Html.DropDownListFor(m => m.LocationId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.LocationsList, "Select Location", new { @class = "form-control mr15" })
+
+						<button class="btn btn-sm btn-success" type="button" onclick="AddLocationstoUser()">Add</button>
+					</div>
+				</div>
+
+				<div class=" mt10">
+					<div class="grid_section">
+						<div class="table-responsive">
+							<table class="table table-bordered" id="tblLocationList">
+								<thead>
+									<tr>
+										<th style="display:none">
+											UserLocationsDetailsId
+										</th>
+										<th style="display:none">
+											UserId
+										</th>
+										<th style="display:none">
+											LocationId
+										</th>
+										<th style="display:none">
+											LocationName
+										</th>
+										<th> Location </th>
+										<th width="10%"> Action </th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (Model != null && Model.UserLocationsList != null)
+									{
+										for (int i = 0; i < Model.UserLocationsList.Count; i++)
+										{
+											<tr>
+												<td style="display:none">
+													@Model.UserLocationsList[i].UserLocationsDetailsId
+												</td>
+												<td style="display:none">
+													@Model.UserLocationsList[i].UserId
+												</td>
+												<td style="display:none">
+													@Model.UserLocationsList[i].LocationId
+												</td>
+												<td style="display:none">
+													@Model.UserLocationsList[i].LocationName
+												</td>
+												<td>
+
+													@Html.HiddenFor(m => Model.UserLocationsList[i].UserLocationsDetailsId)
+													@Html.HiddenFor(m => Model.UserLocationsList[i].UserId)
+													@Html.HiddenFor(m => Model.UserLocationsList[i].LocationId)
+													@Html.HiddenFor(m => Model.UserLocationsList[i].LocationName)
+													@Model.UserLocationsList[i].LocationName
+												</td>
+												<td class="text-center"> <a href="javascript:;" onclick="LocationsListDelete(@Model.UserLocationsList[i].UserLocationsDetailsId,this)" class="text-primary action-icon" aria-label="Delete"><img src="~/images/status-out.png"></a></td>
+											</tr>
+										}
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="col-md-12 text-center">
+				<hr>
+			</div>
+		</div>
+
+		<div class="col-md-12 text-center">
+			<div class="btn-wrapper justify_sb">
+				<a href="@Url.Action("Index", "Users")" class="btn btn-lg btn-secondary">Cancel</a>
+				<button class="btn btn-lg btn-success" type="submit">Save</button>
+			</div>
+		</div>
+	</div>
+
+	@*</div>*@
+
+
+	<!-- Modal -->
+	<div id="newService" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">There are some missing fields that are required to save a form</h4>
+				</div>
+				<div class="modal-body">
+					<div class="pageTitle_wrap">
+						<h6>Please review the below fields before saving</h6>
+					</div>
+					<div class="formSection">
+						<div class="row">
+							@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<!-- Modal -->
+	<div id="UserLocationListError" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Please review the information below</h4>
+				</div>
+				<div class="modal-body">
+					@*<div class="pageTitle_wrap">
+						<h6>Please review the below fields before adding</h6>
+					</div>*@
+					<div class="formSection">
+						<div class="row">
+							<div>
+								<span id="ErrorLocation" class="error ml25" style="display:none"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+
+}
+@*</div>
+	</div>*@
+<script>
+
+	function AddLocationstoUser() {
+		$("#ErrorLocation").text("");
+		document.getElementById("ErrorLocation").style.display = "none";
+		var LocationId = $("#LocationId").val();
+		var LocationIdSelect = document.getElementById("LocationId");
+		var LocationName = LocationIdSelect.options[LocationIdSelect.selectedIndex].text;
+		var Error = false;
+
+		if (LocationId == null || LocationId == "") { document.getElementById("ErrorLocation").removeAttribute("style"); $("#ErrorLocation").text("Please Select Location"); Error = true; }
+		else {
+			var table = $("#tblLocationList tr:gt(0)");
+			$(table).each(function () {
+				var this_row = $(this);
+				var Id = $.trim(this_row.find('td:eq(2)').html());
+				if (Id == LocationId) {
+					document.getElementById("ErrorLocation").removeAttribute("style");
+					$("#ErrorLocation").text(LocationName + " already added in the list");
+					Error = true;
+				}
+			});
+		}
+
+		if (Error) { ShowUserLocationListErrorpopup(); return false };
+
+		var rowcount = $('#tblLocationList tbody tr').length;
+
+		if ($('#tblLocationList tbody:first tr')[0] != null && $('#tblLocationList tbody:first tr')[0].innerText == 'No Data Found') {
+			$("#tblLocationList").find("tr:gt(0)").remove();
+			rowcount = 0;
+		}
+
+		AddLocationsListTOTableRow(rowcount, 0, 0, LocationId, LocationName)
+
+		$("#LocationId").val("");
+	}
+
+	function AddLocationsListTOTableRow(count, UserLocationsDetailsId, UserId, LocationId, LocationName) {
+		$('#tblLocationList').append('<tr>'
+			+ '<td style="display:none">' + UserLocationsDetailsId + '</td>'
+			+ '<td style="display:none">' + UserId + '</td>'
+			+ '<td style="display:none">' + LocationId + '</td>'
+			+ '<td style="display:none">' + LocationName + '</td>'
+			+ '<td><input type="hidden" id="ProgramCalendarList_' + count + '__ProgramCalendarDetailsId" name="UserLocationsList[' + count + '].UserLocationsDetailsId" value="' + UserLocationsDetailsId + '"/>'
+			+ '<input type="hidden" id="ProgramCalendarList_' + count + '__ProgramId" name="UserLocationsList[' + count + '].UserId" value="' + UserId + '"/>'
+			+ '<input type="hidden" id="ProgramCalendarList_' + count + '__CalendarId" name="UserLocationsList[' + count + '].LocationId" value="' + LocationId + '"/>'
+			+ '<input type="hidden" id="ProgramCalendarList_' + count + '__CalendarName" name="UserLocationsList[' + count + '].LocationName" value="' + LocationName + '"/>'
+			+ '' + LocationName + '</td>'
+            + '<td class="text-center"><a href="javascript:;" onclick="LocationsListDelete(' + UserLocationsDetailsId + ',this)" class="text-primary action-icon" aria-label="Delete"><img src="/images/status-out.png" ></a></td></tr>')
+	}
+
+
+	function LocationsListDelete(id, obj) {
+		$("#ErrorLocation").text("");
+		document.getElementById("ErrorLocation").style.display = "none";
+		 var IsAlredyMapping = false;
+        if (id > 0) {
+
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("GetLocationScheduleStatus", "Users")',
+                dataType: "json",
+                data: { "UserLocationDetailsId": id },
+                error: function (jqXHR) {
+                    SignoutURL(jqXHR);
+                },
+            }).done(function (response) {
+                if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+                else {
+                    if (response.IsLocationSchedule != null) {
+                        IsAlredyMapping = response.IsLocationSchedule;
+                        if (!IsAlredyMapping) {
+                            DeleteItem(id, obj)
+						} else {
+							document.getElementById("ErrorLocation").removeAttribute("style");
+							$("#ErrorLocation").text("Unable to remove this location, already attendace taken to this location");
+							ShowUserLocationListErrorpopup();
+                        }
+                    }
+                }
+            });
+
+        }
+        else {
+            DeleteItem(id, obj)
+        }
+	}
+
+	function ShowUserLocationListErrorpopup() {
+		$("#UserLocationListError").modal()
+	}
+
+    function DeleteItem(id, obj) {
+        $(obj).closest('tr').remove();
+        var rowcount = $('#tblLocationList tr').length - 1;
+        if (rowcount > 0) {
+            var count = 0;
+            var table = $("#tblLocationList tr:gt(0)");
+            $("#tblLocationList").find("tr:gt(0)").remove();
+            $(table).each(function () {
+                var this_row = $(this);
+                var UserLocationsDetailsId = $.trim(this_row.find('td:eq(0)').html());
+                var UserId = $.trim(this_row.find('td:eq(1)').html());
+                var LocationId = $.trim(this_row.find('td:eq(2)').html());
+                var LocationName = $.trim(this_row.find('td:eq(3)').html());
+                AddLocationsListTOTableRow(count, UserLocationsDetailsId, UserId, LocationId, LocationName);
+                count++;
+            });
+        }
+    }
+
+	function ShowModelpopup() {
+		$("#newService").modal()
+	}
+
+	function OnchangePassword() {
+		$("#IsPasswordChanged").val("true");
+	}
+</script>

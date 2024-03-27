@@ -1,0 +1,634 @@
+﻿@model FaceApp.Models.ViewModels.ReportsViewModel
+@{
+    ViewBag.Title = "DailyWeeklyReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@using (Html.BeginForm(new { enctype = "multipart/form-data", id = "myDailyWeeklyReportform", autocomplete = "off", role = "form" }))
+{
+
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.SortColumn)
+    @Html.HiddenFor(m => m.SortOrder)
+    @Html.HiddenFor(m => m.PageSize)
+    @Html.HiddenFor(m => m.PageIndex)
+
+    <div class="pageTitle_wrap">
+        <h6>Who's Here</h6>
+        @*<a href="@Url.Action("Create", "Users")" class="btn btn-secondary">New User</a>*@
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <label class="control-label" for="ReportType">Report Type</label>
+            <span style="color:#e85347;"> * </span>
+            @Html.DropDownListFor(m => m.ReportType, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.ReportTypeList, "Select Report Type", new { @class = "form-control mr15" })
+            <label id="ErrorReportType" class="error"></label>
+        </div>
+
+        <div class="col-md-4">
+            <label class="control-label" for="LocationId">Location Name</label>
+            <span style="color:#e85347;"> * </span>
+            @Html.DropDownListFor(m => m.LocationId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.LocationsList, "Select Location", new { @class = "form-control mr15" })
+            <label id="ErrorLocation" class="error"></label>
+        </div>
+
+        <div class="col-md-4">
+            <label class="control-label" for="ProgramId">Program Name</label>
+            <span style="color:#e85347;"> * </span>
+            @Html.DropDownListFor(m => m.ProgramId, (System.Collections.Generic.IEnumerable<SelectListItem>)Model.ProgramsList, "Select Program", new { @class = "form-control mr15" })
+            <label id="ErrorProgram" class="error"></label>
+        </div>
+
+        <div class="col-sm-4 col-md-3" id="divDate" style="display:none">
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <span style="color:#e85347;"> * </span>
+                <div class='input-group date datepicker'>
+                    @Html.TextBoxFor(m => m.Date, new { type = "text", @placeholder = "mm/dd/yyyy", @class = "form-control" })
+                    <span class="input-group-addon">
+                        <img src="~/images/calendar.png" />
+                    </span>
+                </div>
+                <label id="ErrorDate" class="error"></label>
+            </div>
+
+        </div>
+
+        <div class="col-sm-4 col-md-3" id="divFromDate" style="display:none">
+            <div class="form-group">
+                <label class="control-label">From Date</label>
+                <span style="color:#e85347;"> * </span>
+                <div class='input-group date datepicker'>
+                    @Html.TextBoxFor(m => m.FromDate, new { type = "text", @placeholder = "mm/dd/yyyy", @class = "form-control" })
+                    <span class="input-group-addon">
+                        <img src="~/images/calendar.png" />
+                    </span>
+                </div>
+                <label id="ErrorFromDate" class="error"></label>
+            </div>
+
+        </div>
+
+        <div class="col-sm-4 col-md-3" id="divToDate" style="display:none">
+            <div class="form-group">
+                <label class="control-label">To Date</label>
+                <span style="color:#e85347;"> * </span>
+                <div class='input-group date datepicker'>
+                    @Html.TextBoxFor(m => m.ToDate, new { type = "text", @placeholder = "mm/dd/yyyy", @class = "form-control" })
+                    <span class="input-group-addon">
+                        <img src="~/images/calendar.png" />
+                    </span>
+                </div>
+                <label id="ErrorToDate" class="error"></label>
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3 col-sm-12" id="btnSearch" style="display:none">
+            <button class="btn btn-md btn-success mt27" type="button" id="btnLoadSearch">Search</button>
+            <button class="btn btn-md btn-success mt27" type="button" id="btnExport">Export</button>
+        </div>
+
+    </div>
+
+
+    <div class="table-responsive" id="gridSection" style="display:none">
+        <div id="grid" class="mb15"></div>
+        @{ Html.RenderPartial("_PartialGridPagination"); }
+    </div>
+
+
+    <div class="formSection" id="divServiceAttendance" style="display:none">
+        <div class="row">
+            @*<div class="col-sm-12">
+                <p class="text-right">Today's Date  <span> 01/15/2022 </span> </p>
+            </div>*@
+    
+            <div class="col-md-6">
+                <label>Service Attendance</label>
+                <div class="sa_details">
+                    <div>
+                        <label>Scheduled</label>
+                        <input type="text" class="inputfile_xs" id="txtScheduledCount" disabled>
+                    </div>
+                    <div>
+                        <label>Checked In</label>
+                        <input type="text" class="inputfile_xs" id="txtCheckInCount" disabled>
+                    </div>
+                    <div>
+                        <label>Checked Out</label>
+                        <input type="text" class="inputfile_xs" id="txtCheckOutCount" disabled>
+                    </div>
+                    <div>
+                        <label>Missing</label>
+                        <input type="text" class="inputfile_xs text-danger" id="txtMissingCheckOutCount" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+
+    $(window).on('load', function () {
+
+        $('.datepicker').datepicker('setEndDate', new Date());
+
+        $("#ReportType").change(function () {
+            ClearInputValues();
+            ClearErrorText();
+            $("#DailyReport").find("tr:gt(0)").remove();
+            $("#WeeklyReport").find("tr:gt(0)").remove();
+            var ReportType = $("#ReportType").val();
+            var btnSearch = document.getElementById("btnSearch");
+            var divDate = document.getElementById("divDate");
+            var divFromDate = document.getElementById("divFromDate");
+            var divToDate = document.getElementById("divToDate");
+            var gridSectionDiv = document.getElementById("gridSection");
+            var divServiceAttendance = document.getElementById("divServiceAttendance");
+            btnSearch.removeAttribute("style");
+           
+            gridSectionDiv.removeAttribute("style");
+            if (ReportType == "Daily Report") {
+                divServiceAttendance.removeAttribute("style");
+                divFromDate.style.display = "none";
+                divToDate.style.display = "none";
+                divDate.removeAttribute("style");
+            }
+            else if (ReportType == "Weekly Report") {
+                divServiceAttendance.style.display = "none";
+                divDate.style.display = "none";
+                divFromDate.removeAttribute("style");
+                divToDate.removeAttribute("style");
+            }
+            else {
+                divServiceAttendance.style.display = "none";
+                gridSectionDiv.style.display = "none";
+                btnSearch.style.display = "none";
+                divFromDate.style.display = "none";
+                divToDate.style.display = "none";
+                divDate.style.display = "none";
+            }
+
+            $("#grid").jsGrid({
+                //height: height,
+                width: "100%",
+                fields: GenerateFields(),
+                paging: false,
+                autoload: false,
+                sorting: true,
+                editing: false,
+                inserting: false,
+                resizing: true,
+                data: []
+            });
+
+            $("#PageRange")[0].innerText = "Showing Records: 0 - 0 of 0";
+            $("#btnPrevious").prop('disabled', 'disabled');
+            $("#btnNext").prop('disabled', 'disabled');
+            $("#txtScheduledCount").val(0);
+            $("#txtCheckInCount").val(0);
+            $("#txtCheckOutCount").val(0)
+            $("#txtMissingCheckOutCount").val(0);
+        });
+    });
+
+		//var $ = jQuery.noConflict();
+        //Js-Grid Loading Part
+        $(document).ready(function () {
+            $("#grid").jsGrid({
+                //height: "51vh",
+                width: "100%",
+
+                //Data Manipulation
+                sorting: true,
+                paging: false,
+                autoload: true,
+                editing: false,
+                inserting: false,
+                resizing: true,
+                selecting : false,
+                editFields_forBatch: [],
+                _editingRows_forBatch: [],
+				footerrow: true,
+				userDataOnFooter: true,
+                //Data Manipulation
+                controller: {
+                    loadData: function (item) {
+                        var pgstart = item != null && item.start != null ? item.start : 1;
+                        var pgend = item != null && item.end != null ? item.end : $("#pageSize").val();
+                        var sort = item != null && item.sortColumn != null ? item.sortColumn : 'ReportingYear';
+                        var sortorder = item != null && item.sortOrder != null ? item.sortOrder : 'asc';
+                        bindmodel("NoPost");
+
+                        var Model = {
+                            ReportType: $('#ReportType').val(),
+                            ProgramId: $('#ProgramId').val(),
+                            LocationId: $('#LocationId').val(),
+                            Date: $('#Date').val(),
+                            FromDate: $('#FromDate').val(),
+                            ToDate: $('#ToDate').val()
+                        }
+
+                        var d = $.Deferred();
+                        $.ajax({
+                            type: "POST",
+							url: '@Url.Action("GetDailyWeeklyReportData", "Report")',
+                            dataType: "json",
+                            data: { "model": Model, "pagestart": pgstart, "pageend": pgend, sortColumn: sort, sortOrder: sortorder },
+                            error: function (jqXHR) {
+                                SignoutURL(jqXHR);
+                            },
+                        }).done(function (response) {
+							if (response.message == "Error") {
+                                window.location.href = ErrorPageUrl;
+                            }
+                            else {
+                                $("#btnPrevious").prop('disabled', false);
+                                $("#btnNext").prop('disabled', false);
+                                var pagesize = $("#pageSize").val();
+                                pageend = response.pageEnd;
+                                pagestart = response.pageStart;
+                                totalRecords = response.TotalRecords;
+
+                                $("#txtScheduledCount").val(response.TotalRecords);
+                                $("#txtCheckInCount").val(response.CheckInCount);
+                                $("#txtCheckOutCount").val(response.CheckOutCount)
+                                var MissingCount = (response.TotalRecords - response.CheckInCount);
+                                if (MissingCount > 0) {
+                                    $("#txtMissingCheckOutCount").val(MissingCount);
+                                } else {
+                                    $("#txtMissingCheckOutCount").val(0);
+                                }
+
+                                inputChange = false;
+                                $("#PageRange")[0].innerText = "Showing Records: " + (totalRecords == 0 ? totalRecords : parseInt(pagestart)) + " - " + (pageend > totalRecords ? totalRecords : pageend) + " of " + totalRecords;
+                                if (response.response.length > 0) {
+                                    if (response.pageStart == 1 && response.TotalRecords != 1 && pagesize <= response.TotalRecords) {
+                                        gTotalRecords = response.TotalRecords;
+                                        $("#btnPrevious").prop('disabled', 'disabled');
+                                        $("#btnNext").removeAttr('style');
+                                    }
+                                    if (response.pageStart > 1 && response.pageEnd <= response.TotalRecords) {
+                                        gTotalRecords = response.TotalRecords;
+                                        $("#btnNext").removeAttr('style');
+                                        $("#btnPrevious").removeAttr('style');
+                                    }
+                                    if (response.TotalRecords != 1 && pagesize <= response.TotalRecords && response.pageEnd >= response.TotalRecords) {
+                                        gTotalRecords = response.TotalRecords;
+                                        $("#btnNext").prop('disabled', 'disabled');
+                                        $("#btnPrevious").removeAttr('style');
+                                    }
+                                    if (response.pageEnd >= response.TotalRecords && pagesize >= response.TotalRecords) {
+                                        $('#btnPrevious').prop('disabled', 'disabled');
+                                        $("#btnNext").prop('disabled', 'disabled');
+                                    }
+                                }
+                                else {
+                                    $('#btnPrevious').prop('disabled', 'disabled');
+                                    $("#btnNext").prop('disabled', 'disabled');
+                                }
+                            }
+
+							d.resolve(response.response);
+                        });
+
+                        return d.promise();
+                    }
+                },
+                onDataLoaded: function () {
+
+					var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+					var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+						return new bootstrap.Tooltip(tooltipTriggerEl)
+					});
+
+					$('.jsgrid-load-shader').css('display', 'none');
+					$('.jsgrid-load-panel').css('display', 'none');
+                },
+
+				onRefreshed: function (args) {
+					//
+				},
+
+                fields: GenerateFields(),
+
+                _sortData: function () {
+                    defaultSortColumn = this._sortField.name;
+                    defaultSortOrder = this._sortField._grid._sortOrder;
+                    bindmodel();
+                },
+            });
+            //Pagination Declarations
+            pagestart = 1;
+            pageend = 0;
+            totalRecords = 0;
+            // Previous page Navigation
+            $("#btnPrevious").click(function () {
+                var pagesize = $("#pageSize").val();
+                $("#btnPrevious").prop('disabled', 'disabled');
+                pagestart = parseInt(parseInt(pagestart) - parseInt(pagesize));
+                pageend = parseInt(parseInt(pageend) - parseInt(pagesize));
+                bindmodel();
+            });
+
+            // Next page Navigation
+            $("#btnNext").click(function () {
+                $("#btnNext").prop('disabled', 'disabled');
+                $('.jsgrid-load-shader').css('display', 'block');
+                $('.jsgrid-load-panel').css('display', 'block');
+                var pagesize = $("#pageSize").val();
+                pagestart = parseInt(parseInt(pagestart) + parseInt(pagesize));
+                pageend = parseInt(parseInt(pageend) + parseInt(pagesize));
+                bindmodel();
+            });
+
+			$("#pageSize").on('change', function () {
+                pagestart = parseInt(1);
+                pageend = parseInt(this.value);
+                bindmodel();
+            }).focus(function () {
+                previousPageSize = this.value;
+            });
+
+		$("#btnLoadSearch").click(async function () {
+
+            ClearErrorText();
+            var gridSectionDiv = document.getElementById("gridSection");
+            var ReportType = $("#ReportType").val();
+            var ProgramId = $("#ProgramId").val();
+            var LocationId = $("#LocationId").val();
+            var isInvalidClick = false;
+            if (ReportType == "Daily Report") {
+                //Load Daily Report Data
+                
+                var Date = $("#Date").val();
+
+                if (ProgramId == null || ProgramId == "") {
+                    isInvalidClick = true;
+                    $("#ErrorProgram").text("Please Select Program");
+                }
+                if (LocationId == null || LocationId == "") {
+                    isInvalidClick = true;
+                    $("#ErrorLocation").text("Please Select Location");
+                }
+                if (Date == null || Date == "") {
+                    isInvalidClick = true;
+                    $("#ErrorDate").text("Please Select Date");
+                }
+            }
+            else if (ReportType == "Weekly Report") {
+                //Load Weekly Report Data
+                var FromDate = $("#FromDate").val();
+                var ToDate = $("#ToDate").val();
+
+                if (ProgramId == null || ProgramId == "") {
+                    isInvalidClick = true;
+                    $("#ErrorProgram").text("Please Select Program");
+                }
+
+                if (LocationId == null || LocationId == "") {
+                    isInvalidClick = true;
+                    $("#ErrorLocation").text("Please Select Location");
+                }
+
+                if (FromDate == null || FromDate == "") {
+                    isInvalidClick = true;
+                    $("#ErrorFromDate").text("Please Select From Date");
+                }
+
+                if (ToDate == null || ToDate == "") {
+                    isInvalidClick = true;
+                    $("#ErrorToDate").text("Please Select To Date");
+                }
+            }
+
+            
+            if (!isInvalidClick) {
+                $("#grid").jsGrid({
+                    //height: height,
+                    width: "100%",
+                    fields: GenerateFields(),
+                    paging: false,
+                    autoload: false,
+                    sorting: true,
+                    editing: false,
+                    inserting: false,
+                    resizing: true,
+                });
+
+
+                $('#grid').jsGrid('option', 'data', []);
+                gridSectionDiv.style.display = "block";
+
+                var pagesize = $("#pageSize").val();
+                pagestart = parseInt(1);
+                pageend = parseInt(pagesize);
+                bindmodel();
+            }
+            else {
+                return false;
+            }
+        });
+
+              $("#btnExport").click(function () {
+                  ClearErrorText()
+                  var Model = {
+                        ReportType : $("#ReportType").val(),
+                        ProgramId : $("#ProgramId").val(),
+                      LocationId: $("#LocationId").val(),
+                      Date: $('#Date').val(),
+                      FromDate: $('#FromDate').val(),
+                      ToDate: $('#ToDate').val()
+                  }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ExportToExcelDWR", "Report")',
+                dataType: "json",
+                data:  { "model": Model },
+            }).done(function (response) {
+                
+                if (response.errorMessage != "") {
+                    if (response.reportType == "Daily Report") {                        
+                        if ($("#ProgramId").val() == null || $("#ProgramId").val() == "") {
+                            $("#ErrorProgram").text("Please Select Program");
+                        }
+                        if ($('#LocationId').val() == null || $('#LocationId').val() == "") {
+                            $("#ErrorLocation").text("Please Select Location");
+                        }
+                        if ($("#Date").val() == null || $("#Date").val() == "") {
+                            $("#ErrorDate").text("Please Select Date");
+                        }
+                    }
+                    else if (response.reportType == "Weekly Report") {
+                        if ($("#ProgramId").val() == null || $("#ProgramId").val() == "") {
+                            $("#ErrorProgram").text("Please Select Program");
+                        }
+                        if ($('#LocationId').val() == null || $('#LocationId').val() == "") {
+                            $("#ErrorLocation").text("Please Select Location");
+                        }
+                        if ($("#FromDate").val() == null || $("#FromDate").val() == "") {
+                            isInvalidClick = true;
+                            $("#ErrorFromDate").text("Please Select From Date");
+                        }
+                        if ($("#ToDate").val() == null || $("#ToDate").val() == "") {
+                            isInvalidClick = true;
+                            $("#ErrorToDate").text("Please Select To Date");
+                        }
+                    }
+                }
+                else {                    
+                    if (response.reportType == "Daily Report") {
+                        window.location.href = "@Url.RouteUrl(new {Controller = "Report", Action = "DailyDownload" })/?Date=" + $('#Date').val() + "&LocationId=" + $('#LocationId').val() + "&ReportType=" + $('#ReportType').val() + "&ProgramId=" + $("#ProgramId").val();
+                    }
+                    else if (response.reportType == "Weekly Report") {
+                        window.location.href = "@Url.RouteUrl(new {Controller = "Report", Action = "WeeklyDownload" })/?FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LocationId=" + $('#LocationId').val() + "&ReportType=" + $('#ReportType').val() + "&ProgramId=" + $("#ProgramId").val();
+                    }
+                }
+            });
+        });
+
+     });
+
+
+		function bindmodel(mode) {
+		    model = @Html.Raw(Json.Serialize(Model));
+            model.ReportType = $('#ReportType').val();
+            model.ProgramId = $('#ProgramId').val();
+            model.LocationId = $('#LocationId').val();
+            if (mode != 'NoPost') { //To avoid loaddata function post.
+                $('.jsgrid-load-shader').css('display', 'block');
+                $('.jsgrid-load-panel').css('display', 'block');
+                var paginations = { model: model, start: parseInt(pagestart), end: parseInt(pageend), sortColumn: defaultSortColumn, sortOrder: defaultSortOrder };
+                $jgrid.jsGrid("loadData", paginations);
+            }
+		}
+
+	 
+            function GenerateFields() {
+
+                var ReportType = $('#ReportType').val();
+
+                defaultSortColumn = "Name";
+
+                //Tooltip logic
+                if (ReportType != "") {
+                    if (ReportType == "Daily Report") {
+                        return [
+                            { name: "Name", type: "text", title: "Person Name", readOnly: true, width: 200 },                          
+                            { name: "PersonID1", type: "text", title: "Person ID 1", readOnly: true, width: 200 },
+                            { name: "LocationName", type: "text", title: "Location Name", readOnly: true, width: 200, sorting: true },
+                            { name: "ProgramName", type: "text", title: "Program Name", readOnly: true, width: 200, sorting: true },                            
+                            {
+                                name: "StatusIn", title: "Status",
+                                itemTemplate: function (value, item) {
+                                    if (item.StatusIn && item.StatusOut) {
+                                        return '<tr><td> In <a href="" class="statusInOut"> <img src="/images/status-in.png"> </a>  Out <a href="" class=""> <img src="/images/status-in.png"> </a></td></tr>';
+                                    } else if (item.StatusIn) {
+                                        return '<tr><td> In <a href="" class="statusInOut"> <img src="/images/status-in.png"> </a> Out <a href="" class=""> <img src="/images/status-out-report.png"> </a></td></tr>';
+                                    } else if (item.StatusOut) {
+                                        return '<tr><td> In <a href="" class="statusInOut"> <img src="/images/status-out-report.png"> </a> Out <a href="" class=""> <img src="/images/status-in.png"> </a></td></tr>';
+                                    } else {
+                                        return '<tr><td> In <a href="" class="statusInOut"> <img src="/images/status-out-report.png"> </a> Out <a href="" class=""> <img src="/images/status-out-report.png"> </a></td></tr>';
+                                    }
+
+                                }, readOnly: true, width: 175, sorting: false
+                            }
+                        ]
+                    }
+                    else if (ReportType == "Weekly Report") {
+                        return [
+                            { name: "Name", type: "text", title: "Person Name", readOnly: true, width: 200 },
+                            { name: "PersonID1", type: "text", title: "Person Id 1", readOnly: true, width: 90 },                                                
+                            { name: "Date", type: "text", title: "Date", readOnly: true, width: 200 },
+                            { name: "Duration", type: "text", title: "Duration In (Hrs)", readOnly: true, width: 150 },
+                        ]
+                    }
+
+
+                }
+    }
+
+    $("#LocationId").change(function () {
+		var LocationId = $("#LocationId").val();
+		if (LocationId ==""){
+			$("#ProgramId").empty();
+			var optionhtmlProgram = '<option value="">' + "Select Program" + '</option>';
+			$("#ProgramId").append(optionhtmlProgram);
+			$("#ProgramId").val("");
+		    return false;
+		}
+
+            $.ajax({
+                type: "get",
+                url: '@Url.Action("GetLocationSelectedData", "Person")',
+                dataType: "json",
+				data: { "LocationId": LocationId},
+				error: function (jqXHR) {
+					SignoutURL(jqXHR);
+				},
+            }).done(function (response) {
+				if (response.message == "Error") {
+                    window.location.href = '@Url.Action("Error", "Error")';
+                }
+				else {
+					if (response.result.programs !=null){
+                        var id = $("#ProgramId").val();
+                        var existsid = false;
+						$("#ProgramId").empty();
+						var optionhtml1 = '<option value="">' + "Select Program" + '</option>';
+						$("#ProgramId").append(optionhtml1);
+						$.each(response.result.programs, function (i) {
+							var optionhtml = '<option value="' +
+								response.result.programs[i].Value + '">' + response.result.programs[i].Text + '</option>';
+							if (response.result.programs[i].Selected) {
+                                    existsid = true;
+									id = response.result.programs[i].Value;
+                                }
+							if (response.result.programs[i].Value == id) {
+                                    existsid = true;
+								id = response.result.programs[i].Value;
+                                }
+							$("#ProgramId").append(optionhtml);
+
+
+                            });
+                        if (existsid) {
+							$("#ProgramId").val(id);
+                        } else {
+							$("#ProgramId").val("");
+                        }
+						$("#ProgramId").trigger("change");
+					}
+                }
+            });
+    });
+
+
+
+    function ClearErrorText() {
+        $("#ErrorProgram").text("");
+        $("#ErrorLocation").text("");
+        $("#ErrorFromDate").text("");
+        $("#ErrorToDate").text("");
+        $("#ErrorDate").text("");
+    }
+
+    function ClearInputValues() {
+        $('#ProgramId').val(""),
+        $('#LocationId').val(""),
+        $('#Date').val(""),
+        $('#FromDate').val(""),
+        $('#ToDate').val("")
+        $("#txtScheduledCount").val("");
+        $("#txtCheckInCount").val("");
+        $("#txtCheckOutCount").val("")
+        $("#txtMissingCheckOutCount").val("");
+    }
+
+</script>

@@ -1,0 +1,11 @@
+C:\Projects\Facerecognizion\SVN\FaceApp\obj\Debug\netcoreapp2.0\FaceApp.csproj.CoreCompileInputs.cache
+C:\Projects\Facerecognizion\SVN\FaceApp\obj\Debug\netcoreapp2.0\FaceApp.AssemblyInfoInputs.cache
+C:\Projects\Facerecognizion\SVN\FaceApp\obj\Debug\netcoreapp2.0\FaceApp.AssemblyInfo.cs
+C:\Projects\Facerecognizion\SVN\FaceApp\bin\Debug\netcoreapp2.0\FaceApp.deps.json
+C:\Projects\Facerecognizion\SVN\FaceApp\bin\Debug\netcoreapp2.0\FaceApp.runtimeconfig.json
+C:\Projects\Facerecognizion\SVN\FaceApp\bin\Debug\netcoreapp2.0\FaceApp.runtimeconfig.dev.json
+C:\Projects\Facerecognizion\SVN\FaceApp\bin\Debug\netcoreapp2.0\FaceApp.dll
+C:\Projects\Facerecognizion\SVN\FaceApp\bin\Debug\netcoreapp2.0\FaceApp.pdb
+C:\Projects\Facerecognizion\SVN\FaceApp\obj\Debug\netcoreapp2.0\FaceApp.csprojAssemblyReference.cache
+C:\Projects\Facerecognizion\SVN\FaceApp\obj\Debug\netcoreapp2.0\FaceApp.dll
+C:\Projects\Facerecognizion\SVN\FaceApp\obj\Debug\netcoreapp2.0\FaceApp.pdb

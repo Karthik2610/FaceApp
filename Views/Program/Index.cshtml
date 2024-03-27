@@ -1,0 +1,225 @@
+﻿
+@model FaceApp.Models.ViewModels.ProgramListViewModel
+@{
+    ViewData["Title"] = "Program";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Index", "Program", FormMethod.Post, new { autocomplete = "off" }))
+{
+
+
+    @*<div class="contentSection">*@
+    <div class="pageTitle_wrap">
+        <h6>Program List</h6>
+        <a href="@Url.Action("Create", "Program")" class="btn btn-secondary">New Program</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label class="control-label" for="ProgramName">Program Name</label>
+            <span style="color:#e85347;"> * </span>
+            @Html.TextBoxFor(m => m.ProgramName, new { placeholder = "Program Name", @class = "inputfile" })
+            <label id="ErrorProgramName" class="error"></label>
+        </div>
+        <div class="col-md-3 col-sm-12" id="btnSearch">
+            <button class="btn btn-md btn-success mt27" type="button" id="btnLoadSearch">Search</button>
+            <button type="button" id="btnClearSearch" class="btn btn-success mt27">Clear</button>
+        </div>
+
+    </div>
+
+    <div class="grid_section">
+        <div class="table-responsive" id="gridSection">
+            <div id="grid" class="mb15"></div>
+            @{ Html.RenderPartial("_PartialGridPagination"); }
+        </div>
+    </div>
+}
+
+
+
+<script>
+
+$(document).ready(function () {
+           $("#grid").jsGrid({
+               //height: "51vh",
+               width: "100%",
+
+               //Data Manipulation
+               sorting: true,
+               paging: false,
+               autoload: true,
+               editing: false,
+               inserting: false,
+               resizing: true,
+               selecting : false,
+               editFields_forBatch: [],
+               _editingRows_forBatch: [],
+               footerrow: true,
+               userDataOnFooter: true,
+               //Data Manipulation
+               controller: {
+                   loadData: function (item) {
+                       var pgstart = item != null && item.start != null ? item.start : 1;
+                       var pgend = item != null && item.end != null ? item.end : $("#pageSize").val();
+                       var sort = item != null && item.sortColumn != null ? item.sortColumn : 'UserName';
+                       var sortorder = item != null && item.sortOrder != null ? item.sortOrder : 'asc';
+                       bindmodel("NoPost");
+                       var Model = {
+                           ProgramName: model.ProgramName,
+                       };
+                       var d = $.Deferred();
+                       $.ajax({
+                           type: "POST",
+                           url: '@Url.Action("LoadData", "Program")',
+                           dataType: "json",
+                           data: { "model": Model, "pagestart": pgstart, "pageend": pgend, sortColumn: sort, sortOrder: sortorder },
+                           error: function (jqXHR) {
+                               SignoutURL(jqXHR);
+                           },
+                       }).done(function (response) {
+                           if (response.message == "Error") {
+                               window.location.href = ErrorPageUrl;
+                           }
+                           else {
+                               $("#btnPrevious").prop('disabled', false);
+                               $("#btnNext").prop('disabled', false);
+                               var pagesize = $("#pageSize").val();
+                               pageend = response.pageEnd;
+                               pagestart = response.pageStart;
+                               totalRecords = response.TotalRecords;
+                               inputChange = false;
+                               $("#PageRange")[0].innerText = "Showing Records: " + (totalRecords == 0 ? totalRecords : parseInt(pagestart)) + " - " + (pageend > totalRecords ? totalRecords : pageend) + " of " + totalRecords;
+                               if (response.response.length > 0) {
+                                   if (response.pageStart == 1 && response.TotalRecords != 1 && pagesize <= response.TotalRecords) {
+                                       gTotalRecords = response.TotalRecords;
+                                       $("#btnPrevious").prop('disabled', 'disabled');
+                                       $("#btnNext").removeAttr('style');
+                                   }
+                                   if (response.pageStart > 1 && response.pageEnd <= response.TotalRecords) {
+                                       gTotalRecords = response.TotalRecords;
+                                       $("#btnNext").removeAttr('style');
+                                       $("#btnPrevious").removeAttr('style');
+                                   }
+                                   if (response.TotalRecords != 1 && pagesize <= response.TotalRecords && response.pageEnd >= response.TotalRecords) {
+                                       gTotalRecords = response.TotalRecords;
+                                       $("#btnNext").prop('disabled', 'disabled');
+                                       $("#btnPrevious").removeAttr('style');
+                                   }
+                                   if (response.pageEnd >= response.TotalRecords && pagesize >= response.TotalRecords) {
+                                       $('#btnPrevious').prop('disabled', 'disabled');
+                                       $("#btnNext").prop('disabled', 'disabled');
+                                   }
+                               }
+                               else {
+                                   $('#btnPrevious').prop('disabled', 'disabled');
+                                   $("#btnNext").prop('disabled', 'disabled');
+                               }
+                           }
+
+                           d.resolve(response.response);
+                       });
+
+                       return d.promise();
+                   }
+               },
+               onDataLoaded: function () {
+                   $('.jsgrid-load-shader').css('display', 'none');
+                   $('.jsgrid-load-panel').css('display', 'none');
+               },
+
+               onRefreshed: function (args) {
+                   //
+               },
+               fields: [
+                   { name: "ProgramName", type: "text", title: "Program Name", readOnly: true, width: 200 },
+                   {
+                       name: "IsActive", type: "button", title: "Status", readOnly: true, width: 50,
+                       cellRenderer: function (item, row, args) {
+                           if (item) {
+                               return "<td><div class='radio_group'><input class='rd1' type='checkbox' id='chk01' name='checkbox' checked=true disabled></div></td>";
+                           } else {
+                               return "<td><div class='radio_group'><input class='rd1' type='checkbox' id='chk01' name='checkbox' disabled></div></td>";
+                           }
+                        },
+                        sorting: false
+                   },
+                   {
+                        name: "ProgramId", type: "button", title: "Actions", readOnly: true, width: 50,
+                       cellRenderer: function (item, row, args) {
+                           return "<td><a data-tooltip='Click to Edit' href='@Url.Action("Create", "Program")?ProgramId=" + item + "' class='ttBtn text-primary action-icon' aria - label='Edit' ><img src='/images/Edit Icon.svg'></a ></td >";
+                        },
+                        sorting: false
+                    }
+               ],
+               _sortData: function () {
+                   defaultSortColumn = this._sortField.name;
+                   defaultSortOrder = this._sortField._grid._sortOrder;
+                   bindmodel();
+               },
+           });
+           //Pagination Declarations
+           pagestart = 1;
+           pageend = 0;
+           totalRecords = 0;
+           // Previous page Navigation
+           $("#btnPrevious").click(function () {
+               var pagesize = $("#pageSize").val();
+               $("#btnPrevious").prop('disabled', 'disabled');
+               pagestart = parseInt(parseInt(pagestart) - parseInt(pagesize));
+               pageend = parseInt(parseInt(pageend) - parseInt(pagesize));
+               bindmodel();
+           });
+
+           // Next page Navigation
+           $("#btnNext").click(function () {
+               $("#btnNext").prop('disabled', 'disabled');
+               $('.jsgrid-load-shader').css('display', 'block');
+               $('.jsgrid-load-panel').css('display', 'block');
+               var pagesize = $("#pageSize").val();
+               pagestart = parseInt(parseInt(pagestart) + parseInt(pagesize));
+               pageend = parseInt(parseInt(pageend) + parseInt(pagesize));
+               bindmodel();
+           });
+
+           $("#pageSize").on('change', function () {
+               pagestart = parseInt(1);
+               pageend = parseInt(this.value);
+               bindmodel();
+           }).focus(function () {
+               previousPageSize = this.value;
+           });
+            $("#btnLoadSearch").click(function () {
+                $('#ErrorProgramName').text("");
+                var PersonName = $("#ProgramName").val();
+                //var LastName = $('#LastName').val();
+                if ((PersonName != null && PersonName.trim() != "") /*|| (LastName != null && LastName.trim() != "")*/) {
+                    var pagesize = $("#pageSize").val();
+                    pagestart = parseInt(1);
+                    pageend = parseInt(pagesize);
+                    bindmodel();
+                } else {
+                    $('#ErrorProgramName').text("Please Enter Program Name")
+                }
+            });
+
+            $("#btnClearSearch").click(function () {
+                $('#ErrorProgramName').text("");
+                $("#ProgramName").val("");
+                bindmodel();
+            });
+    })
+
+    function bindmodel(mode) {
+             model = @Html.Raw(Json.Serialize(Model));     
+             model.ProgramName = $("#ProgramName").val();
+                       if (mode != 'NoPost') { //To avoid loaddata function post.
+                           $('.jsgrid-load-shader').css('display', 'block');
+                           $('.jsgrid-load-panel').css('display', 'block');
+                           var paginations = { model: model,start: parseInt(pagestart), end: parseInt(pageend), sortColumn: defaultSortColumn, sortOrder: defaultSortOrder };
+                           $jgrid.jsGrid("loadData", paginations);
+                       }
+    }
+
+</script>
