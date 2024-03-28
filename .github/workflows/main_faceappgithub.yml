@@ -54,4 +54,4 @@ jobs:
           app-name: 'FaceAppGitHub'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_42F616D9B8FA4143981AA47AD467E4DB }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_25BBAF3A13EB4FFD9679F89E7E037FA3 }}
