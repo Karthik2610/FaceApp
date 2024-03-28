@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\Facerecognizion\\SVN\\FaceApp\\FaceApp.csproj": {}
+    "C:\\Projects\\Facerecognizion\\NewFaceApp\\FaceApp\\FaceApp.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\Facerecognizion\\SVN\\FaceApp\\FaceApp.csproj": {
+    "C:\\Projects\\Facerecognizion\\NewFaceApp\\FaceApp\\FaceApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\Facerecognizion\\SVN\\FaceApp\\FaceApp.csproj",
+        "projectUniqueName": "C:\\Projects\\Facerecognizion\\NewFaceApp\\FaceApp\\FaceApp.csproj",
         "projectName": "FaceApp",
-        "projectPath": "C:\\Projects\\Facerecognizion\\SVN\\FaceApp\\FaceApp.csproj",
+        "projectPath": "C:\\Projects\\Facerecognizion\\NewFaceApp\\FaceApp\\FaceApp.csproj",
         "packagesPath": "C:\\Users\\sange\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\Facerecognizion\\SVN\\FaceApp\\obj\\",
+        "outputPath": "C:\\Projects\\Facerecognizion\\NewFaceApp\\FaceApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -21,7 +21,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp2.0"
+          "netcoreapp3.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -32,8 +32,8 @@
           "https://nuget.telerik.com/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp2.0": {
-            "targetAlias": "netcoreapp2.0",
+          "netcoreapp3.0": {
+            "targetAlias": "netcoreapp3.0",
             "projectReferences": {}
           }
         },
@@ -44,52 +44,8 @@
         }
       },
       "frameworks": {
-        "netcoreapp2.0": {
-          "targetAlias": "netcoreapp2.0",
-          "dependencies": {
-            "Azure.Communication.Email": {
-              "target": "Package",
-              "version": "[1.0.0, )"
-            },
-            "ClosedXML": {
-              "target": "Package",
-              "version": "[0.102.1, )"
-            },
-            "Microsoft.ApplicationInsights.AspNetCore": {
-              "target": "Package",
-              "version": "[2.1.1, )"
-            },
-            "Microsoft.AspNetCore.All": {
-              "target": "Package",
-              "version": "[2.0.6, )"
-            },
-            "Microsoft.Azure.CognitiveServices.Vision.Face": {
-              "target": "Package",
-              "version": "[2.7.0-preview.1, )"
-            },
-            "Microsoft.Extensions.Logging.ApplicationInsights": {
-              "target": "Package",
-              "version": "[2.21.0, )"
-            },
-            "Microsoft.NETCore.App": {
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[2.0.0, )",
-              "autoReferenced": true
-            },
-            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
-              "target": "Package",
-              "version": "[2.0.4, )"
-            },
-            "RazorEngine.NetCore": {
-              "target": "Package",
-              "version": "[2.2.0, )"
-            },
-            "System.Data.DataSetExtensions": {
-              "target": "Package",
-              "version": "[4.5.0, )"
-            }
-          },
+        "netcoreapp3.0": {
+          "targetAlias": "netcoreapp3.0",
           "imports": [
             "net461",
             "net462",
@@ -100,6 +56,14 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
         }
       }
